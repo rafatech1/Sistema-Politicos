@@ -1,39 +1,63 @@
-import { getSiteSettings } from '@/lib/services/site-settings.service';
+import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
+import { resolveHomeSections, type HomeSectionKey } from '@/lib/home-sections';
+import { HeroSection } from '@/components/public/home/hero-section';
+import { NewsSection } from '@/components/public/home/news-section';
+import { HighlightsSection } from '@/components/public/home/highlights-section';
+import { AboutSection } from '@/components/public/home/about-section';
+import { BeliefsSection } from '@/components/public/home/beliefs-section';
+import { VideosSection } from '@/components/public/home/videos-section';
+import { InstagramSection } from '@/components/public/home/instagram-section';
+import { OfficeSection } from '@/components/public/home/office-section';
+import { ContactSection } from '@/components/public/home/contact-section';
 
-// Home placeholder — o módulo completo (hero, vídeo, contador, chamadas para
-// as seções) é implementado em uma rodada seguinte. Esta página já confirma
-// que a tematização (site_settings) chega até o site público.
+function renderSection(key: HomeSectionKey, socialData: Parameters<typeof ContactSection>[0]['socialData']) {
+  switch (key) {
+    case 'NEWS':
+      return <NewsSection key="news" />;
+    case 'HIGHLIGHTS':
+      return <HighlightsSection key="highlights" />;
+    case 'ABOUT':
+      return <AboutSection key="about" />;
+    case 'BELIEFS':
+      return <BeliefsSection key="beliefs" />;
+    case 'VIDEOS':
+      return <VideosSection key="videos" />;
+    case 'INSTAGRAM':
+      return <InstagramSection key="instagram" />;
+    case 'OFFICE':
+      return <OfficeSection key="office" />;
+    case 'CONTACT':
+      return <ContactSection key="contact" socialData={socialData} />;
+    case 'HERO':
+    default:
+      return null;
+  }
+}
+
 export default async function HomePage() {
-  const settings = await getSiteSettings();
+  const settings = await getCachedSiteSettings();
+  const sections = resolveHomeSections(settings.homeSections);
+
+  const heroEnabled = sections.find((s) => s.key === 'HERO')?.enabled ?? true;
+  const restSections = sections.filter((s) => s.key !== 'HERO' && s.enabled);
+
+  const socialData = {
+    facebookUrl: settings.facebookUrl,
+    instagramUrl: settings.instagramUrl,
+    twitterUrl: settings.twitterUrl,
+    youtubeUrl: settings.youtubeUrl,
+    tiktokUrl: settings.tiktokUrl,
+    linkedinUrl: settings.linkedinUrl,
+    telegramUrl: settings.telegramUrl,
+    kwaiUrl: settings.kwaiUrl,
+    whatsappNumber: settings.whatsappNumber,
+    whatsappDefaultMessage: settings.whatsappDefaultMessage,
+  };
 
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
-      {settings.profilePhotoUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={settings.profilePhotoUrl}
-          alt={settings.candidateName}
-          className="h-32 w-32 rounded-full object-cover"
-        />
-      )}
-      <span
-        className="rounded-full px-4 py-1 text-sm font-semibold text-white"
-        style={{ backgroundColor: 'var(--color-primary)' }}
-      >
-        {settings.candidateNumber} · {settings.partyAcronym}
-      </span>
-      <h1 className="text-4xl font-bold" style={{ color: 'var(--color-primary)' }}>
-        {settings.candidateName}
-      </h1>
-      <p className="text-lg text-slate-600">{settings.position}</p>
-      {settings.slogan && (
-        <p className="text-xl font-medium" style={{ color: 'var(--color-secondary)' }}>
-          &ldquo;{settings.slogan}&rdquo;
-        </p>
-      )}
-      <p className="mt-8 text-sm text-slate-400">
-        Site em construção — módulos do site público serão adicionados nas próximas etapas.
-      </p>
-    </section>
+    <>
+      {heroEnabled && <HeroSection />}
+      <div id="seguinte">{restSections.map((section) => renderSection(section.key, socialData))}</div>
+    </>
   );
 }

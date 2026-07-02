@@ -3,6 +3,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 
 interface SiteSettingsFormData {
+  mode: 'CAMPAIGN' | 'MANDATE';
   candidateName: string;
   candidateNumber: string;
   partyAcronym: string;
@@ -15,6 +16,12 @@ interface SiteSettingsFormData {
   logoUrl: string | null;
   faviconUrl: string | null;
   profilePhotoUrl: string | null;
+  heroBackgroundImageUrl: string | null;
+  aboutTagline: string | null;
+  aboutShortText: string | null;
+  aboutFullText: string | null;
+  officeAddress: string | null;
+  officeMapEmbedUrl: string | null;
   facebookUrl: string | null;
   instagramUrl: string | null;
   twitterUrl: string | null;
@@ -31,6 +38,7 @@ interface SiteSettingsFormData {
   campaignCnpj: string | null;
   footerText: string | null;
   privacyPolicyText: string | null;
+  termsOfServiceText: string | null;
   electionCountdownEnabled: boolean;
   electionDate: string | null;
   metaTitle: string | null;
@@ -89,7 +97,7 @@ export function SettingsForm({
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
     setData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
@@ -125,6 +133,31 @@ export function SettingsForm({
     <form onSubmit={handleSubmit} className="space-y-8">
       <fieldset disabled={!canEdit} className="space-y-8">
         <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+          <h2 className="font-semibold text-slate-900">Modo do site</h2>
+          <p className="text-xs text-slate-500">
+            Campanha: propostas, agenda e voluntariado. Mandato: projetos de lei, emendas
+            parlamentares e prestação de contas. Os módulos são os mesmos — o modo só define quais
+            seções aparecem na Home e os rótulos usados.
+          </p>
+          <div className="max-w-xs space-y-1">
+            <label htmlFor="mode" className="text-sm font-medium text-slate-700">
+              Modo
+            </label>
+            <select
+              id="mode"
+              name="mode"
+              value={data.mode}
+              onChange={handleChange}
+              disabled={!canEdit}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+            >
+              <option value="CAMPAIGN">Campanha</option>
+              <option value="MANDATE">Mandato</option>
+            </select>
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
           <h2 className="font-semibold text-slate-900">Identidade</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Nome do candidato" name="candidateName" value={data.candidateName} onChange={handleChange} disabled={!canEdit} />
@@ -132,7 +165,7 @@ export function SettingsForm({
             <Field label="Sigla do partido" name="partyAcronym" value={data.partyAcronym} onChange={handleChange} disabled={!canEdit} />
             <Field label="Nome do partido" name="partyName" value={data.partyName ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="Cargo pretendido" name="position" value={data.position} onChange={handleChange} disabled={!canEdit} />
-            <Field label="Slogan" name="slogan" value={data.slogan ?? ''} onChange={handleChange} disabled={!canEdit} />
+            <Field label="Slogan (Hero)" name="slogan" value={data.slogan ?? ''} onChange={handleChange} disabled={!canEdit} />
           </div>
         </section>
 
@@ -159,8 +192,22 @@ export function SettingsForm({
             </div>
             <Field label="Logo (URL)" name="logoUrl" value={data.logoUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="Favicon (URL)" name="faviconUrl" value={data.faviconUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
-            <Field label="Foto de perfil (URL)" name="profilePhotoUrl" value={data.profilePhotoUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
+            <Field label="Foto de perfil (seção Sobre)" name="profilePhotoUrl" value={data.profilePhotoUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
+            <Field label="Foto de fundo do Hero" name="heroBackgroundImageUrl" value={data.heroBackgroundImageUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
           </div>
+        </section>
+
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+          <h2 className="font-semibold text-slate-900">Sobre / Biografia resumida</h2>
+          <Field label="Tagline (ex: Cristão, conservador e defensor da família)" name="aboutTagline" value={data.aboutTagline ?? ''} onChange={handleChange} disabled={!canEdit} />
+          <Field label="Resumo curto (exibido na Home)" name="aboutShortText" value={data.aboutShortText ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
+          <Field label="Texto completo (página /sobre)" name="aboutFullText" value={data.aboutFullText ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
+        </section>
+
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+          <h2 className="font-semibold text-slate-900">Gabinete / Comitê</h2>
+          <Field label="Endereço" name="officeAddress" value={data.officeAddress ?? ''} onChange={handleChange} disabled={!canEdit} />
+          <Field label="URL de embed do Google Maps" name="officeMapEmbedUrl" value={data.officeMapEmbedUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
         </section>
 
         <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
@@ -176,6 +223,7 @@ export function SettingsForm({
             <Field label="WhatsApp (número)" name="whatsappNumber" value={data.whatsappNumber ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="Mensagem padrão do WhatsApp" name="whatsappDefaultMessage" value={data.whatsappDefaultMessage ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="E-mail de contato" name="contactEmail" value={data.contactEmail ?? ''} onChange={handleChange} disabled={!canEdit} />
+            <Field label="Telefone de contato" name="contactPhone" value={data.contactPhone ?? ''} onChange={handleChange} disabled={!canEdit} />
           </div>
         </section>
 
@@ -189,7 +237,7 @@ export function SettingsForm({
               onChange={handleChange}
               disabled={!canEdit}
             />
-            Exibir contador regressivo no site
+            Exibir contador regressivo no Hero
           </label>
           <Field
             label="Data da eleição"
@@ -209,7 +257,9 @@ export function SettingsForm({
           </p>
           <Field label="CNPJ da campanha" name="campaignCnpj" value={data.campaignCnpj ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="Identificação TSE (rodapé)" name="tseIdentification" value={data.tseIdentification ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
+          <Field label="Texto do rodapé" name="footerText" value={data.footerText ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="Política de privacidade (LGPD)" name="privacyPolicyText" value={data.privacyPolicyText ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
+          <Field label="Termos de uso" name="termsOfServiceText" value={data.termsOfServiceText ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
         </section>
 
         <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">

@@ -9,7 +9,8 @@ export type Permission =
   | 'audit:read'
   | 'content:read'
   | 'content:write'
-  | 'content:publish';
+  | 'content:publish'
+  | 'leads:manage';
 
 export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   ADMIN: [
@@ -20,6 +21,7 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     'content:read',
     'content:write',
     'content:publish',
+    'leads:manage',
   ],
   EDITOR: ['content:read', 'content:write'],
 };

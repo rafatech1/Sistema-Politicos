@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { HOME_SECTION_KEYS } from '@/lib/home-sections';
 
 const hexColor = z
   .string()
@@ -12,7 +13,15 @@ const extraLinkSchema = z.object({
   url: z.string().url(),
 });
 
+const homeSectionSchema = z.object({
+  key: z.enum(HOME_SECTION_KEYS),
+  enabled: z.boolean(),
+  order: z.number().int(),
+});
+
 export const siteSettingsSchema = z.object({
+  mode: z.enum(['CAMPAIGN', 'MANDATE']).optional(),
+
   candidateName: z.string().min(1).optional(),
   candidateNumber: z.string().min(1).optional(),
   partyAcronym: z.string().min(1).optional(),
@@ -28,6 +37,16 @@ export const siteSettingsSchema = z.object({
   logoDarkUrl: optionalUrl,
   faviconUrl: optionalUrl,
   profilePhotoUrl: optionalUrl,
+  heroBackgroundImageUrl: optionalUrl,
+
+  aboutTagline: optionalText,
+  aboutShortText: optionalText,
+  aboutFullText: optionalText,
+
+  officeAddress: optionalText,
+  officeMapEmbedUrl: optionalUrl,
+
+  homeSections: z.array(homeSectionSchema).optional().nullable(),
 
   facebookUrl: optionalUrl,
   instagramUrl: optionalUrl,
@@ -48,6 +67,7 @@ export const siteSettingsSchema = z.object({
   campaignCnpj: optionalText,
   footerText: optionalText,
   privacyPolicyText: optionalText,
+  termsOfServiceText: optionalText,
 
   electionCountdownEnabled: z.boolean().optional(),
   electionDate: z.coerce.date().optional().nullable(),

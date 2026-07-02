@@ -34,13 +34,14 @@ export async function upsertSiteSettings(data: SiteSettingsInput, updatedById?: 
   await getSiteSettings(); // garante que a linha exista antes do update parcial
 
   // Json? não aceita `null` puro no update do Prisma — precisa de Prisma.JsonNull.
-  const { extraLinks, ...rest } = data;
+  const { extraLinks, homeSections, ...rest } = data;
 
   return prisma.siteSettings.update({
     where: { id: SETTINGS_ID },
     data: {
       ...rest,
       extraLinks: extraLinks === null ? Prisma.JsonNull : extraLinks,
+      homeSections: homeSections === null ? Prisma.JsonNull : homeSections,
       updatedById: updatedById ?? null,
     },
   });

@@ -103,6 +103,16 @@ async function main() {
 
   p.log.step('Dados do candidato');
 
+  const modeChoice = await p.select({
+    message: 'Modo do site',
+    options: [
+      { value: 'CAMPAIGN', label: 'Campanha (propostas, agenda, voluntariado)' },
+      { value: 'MANDATE', label: 'Mandato (projetos de lei, emendas, prestação de contas)' },
+    ],
+  });
+  if (p.isCancel(modeChoice)) return cancelSetup();
+  const mode = modeChoice as 'CAMPAIGN' | 'MANDATE';
+
   const candidateName = await p.text({
     message: 'Nome do candidato',
     validate: (v) => (v.trim().length < 2 ? 'Informe o nome completo' : undefined),
@@ -214,6 +224,7 @@ async function main() {
   await upsertSiteSettings(
     {
       ...siteSettingsData,
+      mode,
       partyName: partyName || null,
       slogan: slogan || null,
       primaryColor,
