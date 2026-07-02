@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { revalidatePath } from 'next/cache';
 import { requireUser } from '@/lib/auth/session';
 import { requirePermission } from '@/lib/auth/rbac';
 import { getSiteSettings, upsertSiteSettings } from '@/lib/services/site-settings.service';
@@ -41,11 +40,6 @@ export async function PUT(request: NextRequest) {
       ipAddress: meta.ipAddress,
       userAgent: meta.userAgent,
     });
-
-    // site_settings alimenta o tema/metadata do layout raiz (herdado por todo
-    // o site público e admin) — revalida tudo para refletir a mudança sem
-    // esperar o próximo deploy/rebuild.
-    revalidatePath('/', 'layout');
 
     return NextResponse.json(updated);
   } catch (err) {

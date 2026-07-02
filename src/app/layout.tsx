@@ -19,11 +19,12 @@ const fraunces = Fraunces({
   display: 'swap',
 });
 
-// site_settings alimenta tema/metadata deste layout raiz. revalidatePath é
-// disparado a cada PUT em /api/admin/settings (ver src/app/api/admin/settings/route.ts);
-// este revalidate por tempo é só um fallback de segurança para outros
-// caminhos de escrita (setup, seed, edição direta no banco).
-export const revalidate = 300;
+// site_settings alimenta tema/metadata deste layout raiz e é lido em toda
+// requisição — força renderização dinâmica (sem tentativa de pré-geração
+// estática no build, que exigiria banco acessível durante `next build`) e
+// garante que mudanças feitas em /admin/settings apareçam imediatamente,
+// sem depender de revalidação por tempo.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getCachedSiteSettings();
