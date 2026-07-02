@@ -1,0 +1,431 @@
+// Schema do template de site institucional para candidato político.
+// Modela o domínio completo do produto; os módulos de conteúdo público
+// (Propostas, Notícias, Agenda, Galeria etc.) têm o schema pronto aqui,
+// mas a UI/API deles é implementada em rodadas seguintes.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== Enums ====================
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ProjetoStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum EventoStatus {
+  SCHEDULED
+  CANCELLED
+  COMPLETED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum StorageProvider {
+  LOCAL
+  S3
+}
+
+enum CategoriaType {
+  NOTICIA
+  PROJETO
+  GERAL
+}
+
+enum LeadType {
+  VOLUNTEER
+  CONTACT
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  ARCHIVED
+  SPAM
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGIN_FAILED
+  LOGOUT
+}
+
+// ==================== Auth / RBAC ====================
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(EDITOR)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  refreshTokens       RefreshToken[]
+  auditLogs           AuditLog[]
+  siteSettingsUpdates SiteSettings[]
+  propostas           Proposta[]
+  posts               Post[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id                  String    @id @default(cuid())
+  userId              String
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash           String    @unique
+  family              String
+  createdAt           DateTime  @default(now())
+  expiresAt           DateTime
+  revokedAt           DateTime?
+  replacedByTokenHash String?
+  userAgent           String?
+  ipAddress           String?
+
+  @@index([userId])
+  @@index([family])
+  @@map("refresh_tokens")
+}
+
+// ==================== Site Settings (linha única, id fixo = 1) ====================
+
+model SiteSettings {
+  id Int @id @default(1)
+
+  candidateName  String
+  candidateNumber String
+  partyAcronym   String
+  partyName      String?
+  position       String // cargo pretendido
+  slogan         String?
+
+  primaryColor   String  @default("#0F172A")
+  secondaryColor String  @default("#2563EB")
+  accentColor    String?
+
+  logoUrl          String?
+  logoDarkUrl      String?
+  faviconUrl       String?
+  profilePhotoUrl  String?
+
+  facebookUrl  String?
+  instagramUrl String?
+  twitterUrl   String?
+  youtubeUrl   String?
+  tiktokUrl    String?
+  linkedinUrl  String?
+  telegramUrl  String?
+  kwaiUrl      String?
+  extraLinks   Json? // overflow para redes sociais não previstas: [{ label, url }]
+
+  whatsappNumber         String?
+  whatsappDefaultMessage String?
+  contactEmail           String?
+  contactPhone           String?
+
+  // Campos de conformidade legal (Lei 9.504/97 + LGPD).
+  // ATENÇÃO: os textos exatos exigidos para propaganda eleitoral na internet
+  // devem ser validados com a assessoria jurídica de cada campanha antes de publicar.
+  tseIdentification  String? @db.Text
+  campaignCnpj       String?
+  footerText         String?
+  privacyPolicyText  String? @db.Text
+
+  electionCountdownEnabled Boolean   @default(false)
+  electionDate             DateTime?
+
+  metaTitle       String?
+  metaDescription String?
+  ogImageUrl      String?
+
+  updatedById String?
+  updatedBy   User?    @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+  updatedAt   DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+// ==================== Auditoria ====================
+
+model AuditLog {
+  id                String      @id @default(cuid())
+  entityType        String // ex: "SiteSettings", "Proposta", "Auth"
+  entityId          String
+  action            AuditAction
+  beforeJson        Json?
+  afterJson         Json?
+  userId            String?
+  user              User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userEmailSnapshot String?
+  ipAddress         String?
+  userAgent         String?
+  createdAt         DateTime    @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ==================== Propostas / Eixos Temáticos ====================
+
+model EixoTematico {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  icon        String?
+  color       String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  propostas Proposta[]
+
+  @@map("eixos_tematicos")
+}
+
+model Proposta {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String        @unique
+  summary        String?
+  content        String        @db.Text
+  status         PublishStatus @default(DRAFT)
+  coverImageUrl  String?
+  order          Int           @default(0)
+  eixoTematicoId String?
+  eixoTematico   EixoTematico? @relation(fields: [eixoTematicoId], references: [id], onDelete: SetNull)
+  authorId       String?
+  author         User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  publishedAt    DateTime?
+
+  // Gerida via SQL bruto (coluna gerada STORED + índice GIN), ver migration
+  // add_fulltext_search. O Prisma Client ignora este campo para leitura/escrita.
+  searchVector Unsupported("tsvector")? @map("search_vector")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([eixoTematicoId])
+  @@map("propostas")
+}
+
+// ==================== Projetos / Realizações ====================
+
+model Projeto {
+  id            String        @id @default(cuid())
+  title         String
+  slug          String        @unique
+  description   String        @db.Text
+  status        ProjetoStatus @default(PLANNED)
+  publishStatus PublishStatus @default(DRAFT)
+  location      String?
+  coverImageUrl String?
+  startDate     DateTime?
+  endDate       DateTime?
+  order         Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  midias Midia[]
+
+  @@map("projetos")
+}
+
+// ==================== Agenda de Eventos ====================
+
+model Evento {
+  id            String       @id @default(cuid())
+  title         String
+  slug          String       @unique
+  description   String?      @db.Text
+  startAt       DateTime
+  endAt         DateTime?
+  location      String?
+  address       String?
+  isPublic      Boolean      @default(true)
+  status        EventoStatus @default(SCHEDULED)
+  coverImageUrl String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([startAt])
+  @@map("eventos")
+}
+
+// ==================== Notícias / Categorias / Tags ====================
+
+model Categoria {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  type        CategoriaType @default(NOTICIA)
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  posts Post[]
+
+  @@map("categorias")
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  posts PostTag[]
+
+  @@map("tags")
+}
+
+model PostTag {
+  postId String
+  tagId  String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@map("post_tags")
+}
+
+model Post {
+  id            String        @id @default(cuid())
+  title         String
+  slug          String        @unique
+  excerpt       String?
+  content       String        @db.Text
+  coverImageUrl String?
+  status        PublishStatus @default(DRAFT)
+  publishedAt   DateTime?
+  authorId      String?
+  author        User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  categoryId    String?
+  category      Categoria?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  viewCount     Int           @default(0)
+
+  // Gerida via SQL bruto (coluna gerada STORED + índice GIN), ver migration
+  // add_fulltext_search. O Prisma Client ignora este campo para leitura/escrita.
+  searchVector Unsupported("tsvector")? @map("search_vector")
+
+  tags PostTag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([categoryId])
+  @@map("posts")
+}
+
+// ==================== Galeria (Álbuns / Mídia) ====================
+
+model Album {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  description   String?
+  coverImageUrl String?
+  order         Int      @default(0)
+  isPublic      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  midias Midia[]
+
+  @@map("albuns")
+}
+
+model Midia {
+  id           String          @id @default(cuid())
+  albumId      String?
+  album        Album?          @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  projetoId    String?
+  projeto      Projeto?        @relation(fields: [projetoId], references: [id], onDelete: SetNull)
+  url          String
+  thumbnailUrl String?
+  type         MediaType       @default(IMAGE)
+  provider     StorageProvider @default(LOCAL)
+  storageKey   String? // chave/caminho específico do adapter, usado para delete()
+  caption      String?
+  altText      String?
+  width        Int?
+  height       Int?
+  order        Int             @default(0)
+  createdAt    DateTime        @default(now())
+
+  @@index([albumId])
+  @@index([projetoId])
+  @@map("midias")
+}
+
+// ==================== Leads (Voluntário / Contato) ====================
+
+model Lead {
+  id           String     @id @default(cuid())
+  type         LeadType
+  name         String
+  email        String?
+  phone        String?
+  message      String?    @db.Text
+  city         String?
+  neighborhood String?
+  zipCode      String?
+  status       LeadStatus @default(NEW)
+  source       String?
+  consentLGPD  Boolean    @default(false)
+  consentAt    DateTime?
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([type, status])
+  @@map("leads")
+}
+
+// ==================== Biografia / Linha do Tempo ====================
+
+model BiografiaTimelineItem {
+  id          String    @id @default(cuid())
+  year        Int?
+  date        DateTime?
+  title       String
+  description String?   @db.Text
+  imageUrl    String?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("biografia_timeline_items")
+}
