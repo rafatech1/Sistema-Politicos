@@ -9,7 +9,7 @@ export interface InstagramHighlightRow {
 }
 
 export const FIELDS: FormFieldConfig[] = [
-  { name: 'imageUrl', label: 'Imagem (URL)', required: true },
+  { name: 'imageUrl', label: 'Imagem', type: 'image', required: true },
   { name: 'caption', label: 'Legenda', type: 'textarea' },
   { name: 'postUrl', label: 'URL do post no Instagram', required: true },
   { name: 'order', label: 'Ordem', type: 'number' },

@@ -2,7 +2,7 @@
 
 Template reutilizável de site institucional para candidatos políticos brasileiros. Modelo de negócio: **deploy individual por cliente** — cada candidato tem seu próprio clone deste repositório, seu próprio banco de dados e seu próprio deploy. Nada de identidade do candidato fica no código: tudo vive em `.env` (segredos/infraestrutura) ou na tabela `site_settings` (conteúdo editável pelo painel admin).
 
-> **Status atual**: fundação do produto — schema completo do banco, autenticação/RBAC e configuração/tematização (`site_settings`) já implementados. Os módulos do site público (Home, Biografia, Propostas, Projetos, Agenda, Notícias, Galeria, Apoie/Participe) e o restante do painel admin serão adicionados em rodadas seguintes. Veja [Roadmap](#roadmap--próximos-módulos).
+> **Status atual**: schema completo do banco, autenticação/RBAC, configuração/tematização (`site_settings`), site público e painel admin (CRUDs de conteúdo com editor rich text e upload de imagem, log de auditoria, sitemap/robots, banner de cookies) já implementados. Itens restantes do roadmap em [Roadmap](#roadmap--próximos-módulos).
 
 ## Stack Tecnológica
 
@@ -75,14 +75,18 @@ src/
     validations/           Schemas zod de entrada
     utils/                  Helpers (slugify, respostas de API, metadados de request)
   app/
-    (public)/              Site público do candidato (home placeholder por enquanto)
+    (public)/              Site público do candidato
     admin/
       (auth)/login/         Login (fora do gate de autenticação)
-      (dashboard)/           Área autenticada: dashboard, configurações, usuários
+      (dashboard)/           Área autenticada: dashboard, CRUDs de conteúdo, configurações, usuários, auditoria
     api/
       auth/                  login, refresh, logout, me
-      admin/                 settings, users
+      admin/                 settings, users, media (upload), audit-logs, CRUDs de conteúdo
       health/
+    sitemap.ts / robots.ts  Special files do Next.js (SEO)
+  components/
+    admin/                  ResourceForm/ResourceTable genéricos + RichTextEditor (Tiptap) + ImageUploadField
+    public/                 Header, footer, seções da Home, CookieBanner etc.
 ```
 
 ## Autenticação e Papéis (RBAC)
@@ -112,7 +116,9 @@ As colunas `search_vector` de `propostas` e `posts` são geridas via SQL puro (c
 
 Interface `StorageAdapter` (`src/lib/media/storage.ts`) com duas implementações:
 - `LocalStorageAdapter`: grava em `public/uploads/` — **apenas para desenvolvimento** (o filesystem da Vercel é efêmero em produção).
-- `S3StorageAdapter`: stub para armazenamento S3-compatível (Cloudflare R2, Backblaze B2) — implementar antes de subir um cliente em produção. Selecionado via `MEDIA_STORAGE_PROVIDER=s3` no `.env`.
+- `S3StorageAdapter`: armazenamento S3-compatível (Cloudflare R2, Backblaze B2) via `@aws-sdk/client-s3`. Selecionado com `MEDIA_STORAGE_PROVIDER=s3` no `.env` — nesse modo, `S3_ENDPOINT`/`S3_REGION`/`S3_BUCKET`/`S3_ACCESS_KEY_ID`/`S3_SECRET_ACCESS_KEY`/`S3_PUBLIC_BASE_URL` passam a ser obrigatórios (validado em `src/lib/env.ts`, falha no boot se faltar algum).
+
+O upload em si passa por `POST /api/admin/media` (multipart/form-data, campo `file`; PNG/JPEG/WebP/GIF até 5MB), usado tanto pelo editor rich text (`RichTextEditor`) quanto pelo campo de imagem (`ImageUploadField`) — ambos em `src/components/admin/`.
 
 ## Segurança
 
@@ -124,7 +130,12 @@ Interface `StorageAdapter` (`src/lib/media/storage.ts`) com duas implementaçõe
 
 ## Auditoria
 
-Toda alteração relevante é registrada em `AuditLog` (`entityType`, `entityId`, `action`, `beforeJson`, `afterJson`, `userId`, timestamps). Use `writeAuditLog()` ou o wrapper `withAudit()` (`src/lib/audit/audit-log.ts`) em qualquer novo CRUD para manter o padrão sem repetir boilerplate. Uma UI de visualização do log de auditoria está no roadmap.
+Toda alteração relevante é registrada em `AuditLog` (`entityType`, `entityId`, `action`, `beforeJson`, `afterJson`, `userId`, timestamps). Use `writeAuditLog()` ou o wrapper `withAudit()` (`src/lib/audit/audit-log.ts`) em qualquer novo CRUD para manter o padrão sem repetir boilerplate. Visualização em `/admin/auditoria` (permissão `audit:read`, só ADMIN), com filtros por entidade/ação e diff antes/depois.
+
+## SEO e Compliance
+
+- `src/app/sitemap.ts` e `src/app/robots.ts` (special files do Next.js) geram `/sitemap.xml` e `/robots.txt` a partir do conteúdo publicado e do modo do site (Campanha/Mandato).
+- Banner de cookies (LGPD) em `src/components/public/cookie-banner.tsx`, montado no layout público — consentimento simples (aceitar) persistido em `localStorage`, sem categorias (o site hoje só usa cookies funcionais).
 
 ## Checklist de Deploy — Vercel + Railway
 
@@ -156,7 +167,7 @@ Toda alteração relevante é registrada em `AuditLog` (`entityType`, `entityId`
 | `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | Segredos JWT (gerados automaticamente pelo `npm run setup` se ausentes) |
 | `NEXT_PUBLIC_SITE_URL` | URL pública do site (metadata, links absolutos) |
 | `MEDIA_STORAGE_PROVIDER` | `local` (dev) ou `s3` (produção) |
-| `S3_*` | Configuração do storage S3-compatível, usada apenas quando `MEDIA_STORAGE_PROVIDER=s3` |
+| `S3_*` (`ENDPOINT`, `REGION`, `BUCKET`, `ACCESS_KEY_ID`, `SECRET_ACCESS_KEY`, `PUBLIC_BASE_URL`) | Configuração do storage S3-compatível — **obrigatórias** quando `MEDIA_STORAGE_PROVIDER=s3` |
 
 ## Como Personalizar para um Novo Cliente
 
@@ -167,7 +178,10 @@ Toda alteração relevante é registrada em `AuditLog` (`entityType`, `entityId`
 
 ## Roadmap / Próximos Módulos
 
-- Site público: Home completa, Biografia/Trajetória, Propostas, Projetos/Realizações, Agenda de Campanha, Notícias/Blog, Galeria de Mídia, Apoie/Participe.
-- Painel admin: CRUDs de conteúdo, gerenciador de mídia central (upload/crop/WebP), editor rich text (Tiptap), lista de leads com exportação CSV, visualizador de log de auditoria, sitemap.xml/robots.txt.
-- Conformidade: banner de cookies (LGPD), widget VLibras, revisão de acessibilidade WCAG AA.
-- Implementação real do `S3StorageAdapter`.
+- Galeria de mídia central (biblioteca reutilizável de imagens entre Post/Proposta/Projeto — hoje cada campo de imagem faz upload avulso via `/api/admin/media`), Agenda de Campanha.
+- Conformidade: widget VLibras, revisão de acessibilidade WCAG AA.
+- Suíte de testes automatizados (auth/RBAC/`crud-route-factory`) — maior ponto cego hoje, nenhum módulo tem cobertura.
+
+### Concluído nesta rodada
+- Editor rich text (Tiptap) e upload de imagem (local + `S3StorageAdapter` real) nos campos de conteúdo e em `site_settings`.
+- Visualizador de log de auditoria (`/admin/auditoria`), `sitemap.xml`/`robots.txt`, banner de cookies (LGPD).

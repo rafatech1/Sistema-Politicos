@@ -29,9 +29,9 @@ export const FIELDS: FormFieldConfig[] = [
   { name: 'title', label: 'Título', required: true },
   { name: 'slug', label: 'Slug (opcional — gerado automaticamente a partir do título)' },
   { name: 'summary', label: 'Resumo (exibido nas listagens)', type: 'textarea' },
-  { name: 'content', label: 'Conteúdo (HTML)', type: 'textarea', required: true },
+  { name: 'content', label: 'Conteúdo', type: 'richtext', required: true },
   { name: 'externalUrl', label: 'Link externo (Câmara/Assembleia)' },
-  { name: 'coverImageUrl', label: 'Imagem de capa (URL)' },
+  { name: 'coverImageUrl', label: 'Imagem de capa', type: 'image' },
   { name: 'status', label: 'Status de tramitação', type: 'select', options: TRAMITACAO_OPTIONS },
   { name: 'order', label: 'Ordem', type: 'number' },
   {

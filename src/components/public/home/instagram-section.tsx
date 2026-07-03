@@ -11,7 +11,7 @@ export async function InstagramSection() {
   if (highlights.length === 0) return null;
 
   return (
-    <section className="bg-white px-6 py-20 sm:py-28">
+    <section className="bg-slate-50 px-6 py-20 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           eyebrow="Redes sociais"

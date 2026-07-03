@@ -1,7 +1,8 @@
 import { z } from 'zod';
+import { imagePath } from '@/lib/validations/zod-helpers';
 
 export const createInstagramHighlightSchema = z.object({
-  imageUrl: z.string().url('Informe uma URL de imagem válida'),
+  imageUrl: imagePath,
   caption: z.string().optional().nullable(),
   postUrl: z.string().url('Informe uma URL válida do post'),
   order: z.coerce.number().int().default(0),

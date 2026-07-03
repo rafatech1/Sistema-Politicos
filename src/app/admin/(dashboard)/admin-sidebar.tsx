@@ -28,10 +28,12 @@ export function AdminSidebar({
   canManageLeads,
   canManageSettings,
   canManageUsers,
+  canReadAudit,
 }: {
   canManageLeads: boolean;
   canManageSettings: boolean;
   canManageUsers: boolean;
+  canReadAudit: boolean;
 }) {
   const groups: NavGroup[] = [
     { label: 'Visão Geral', items: [{ label: 'Dashboard', href: '/admin' }] },
@@ -61,6 +63,7 @@ export function AdminSidebar({
   const settingsItems: { label: string; href: string }[] = [];
   if (canManageSettings) settingsItems.push({ label: 'Configurações', href: '/admin/settings' });
   if (canManageUsers) settingsItems.push({ label: 'Usuários', href: '/admin/users' });
+  if (canReadAudit) settingsItems.push({ label: 'Auditoria', href: '/admin/auditoria' });
   if (settingsItems.length > 0) groups.push({ label: 'Administração', items: settingsItems });
 
   return (

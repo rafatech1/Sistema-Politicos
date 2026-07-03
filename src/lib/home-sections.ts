@@ -1,7 +1,7 @@
 // Fonte única das seções da Home: chaves válidas, ordem/estado padrão.
-// Reaproveitada pelo service (valor inicial de site_settings.homeSections) e
-// pelos componentes da Home (para saber o que renderizar e em que ordem).
-// TODO(admin CRUD): expor toggle/reordenação no painel.
+// Reaproveitada pelo service (valor inicial de site_settings.homeSections),
+// pelos componentes da Home (para saber o que renderizar e em que ordem) e
+// pela curadoria no painel admin (settings-form.tsx).
 
 export const HOME_SECTION_KEYS = [
   'HERO',
@@ -11,6 +11,7 @@ export const HOME_SECTION_KEYS = [
   'BELIEFS',
   'VIDEOS',
   'INSTAGRAM',
+  'SOCIAL_BAR',
   'OFFICE',
   'CONTACT',
 ] as const;
@@ -22,6 +23,19 @@ export interface HomeSectionConfig {
   enabled: boolean;
   order: number;
 }
+
+export const HOME_SECTION_LABELS: Record<HomeSectionKey, string> = {
+  HERO: 'Hero',
+  NEWS: 'Últimas Notícias',
+  HIGHLIGHTS: 'Projetos de Lei / Propostas',
+  ABOUT: 'Sobre / Biografia resumida',
+  BELIEFS: 'No que acredito',
+  VIDEOS: 'Vídeos do YouTube',
+  INSTAGRAM: 'Instagram / Redes',
+  SOCIAL_BAR: 'Barra de redes sociais',
+  OFFICE: 'Gabinete / Comitê',
+  CONTACT: 'Contato',
+};
 
 export function defaultHomeSections(): HomeSectionConfig[] {
   return HOME_SECTION_KEYS.map((key, index) => ({ key, enabled: true, order: index }));

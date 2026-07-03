@@ -28,3 +28,19 @@ export function optionalEnum<T extends [string, ...string[]]>(values: T, default
     z.enum(values).default(defaultValue),
   );
 }
+
+/**
+ * Caminho/URL de imagem: aceita tanto uma URL absoluta (link externo colado,
+ * ou retorno do S3StorageAdapter) quanto um caminho relativo iniciando com "/"
+ * (retorno do LocalStorageAdapter, ex: "/uploads/content/…"). `z.string().url()`
+ * sozinho rejeitaria o caminho relativo do upload local.
+ */
+export const imagePath = z
+  .string()
+  .refine((val) => val.startsWith('/') || /^https?:\/\//.test(val), 'Informe uma URL de imagem válida');
+
+/** Versão opcional de imagePath vinda de um <input> não obrigatório: string vazia vira undefined. */
+export const optionalImagePath = z.preprocess(
+  (val) => (val === '' || val === null || val === undefined ? undefined : val),
+  imagePath.optional(),
+);

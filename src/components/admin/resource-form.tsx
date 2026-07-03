@@ -2,11 +2,13 @@
 
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { RichTextEditor } from '@/components/admin/rich-text-editor';
+import { ImageUploadField } from '@/components/admin/image-upload-field';
 
 export interface FormFieldConfig {
   name: string;
   label: string;
-  type?: 'text' | 'textarea' | 'checkbox' | 'select' | 'date' | 'number';
+  type?: 'text' | 'textarea' | 'checkbox' | 'select' | 'date' | 'number' | 'richtext' | 'image';
   options?: { value: string; label: string }[];
   required?: boolean;
   helpText?: string;
@@ -51,6 +53,10 @@ export function ResourceForm({
     setData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   }
 
+  function setFieldValue(name: string, value: string) {
+    setData((prev) => ({ ...prev, [name]: value }));
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -88,7 +94,17 @@ export function ResourceForm({
             {field.required && ' *'}
           </label>
 
-          {field.type === 'checkbox' ? (
+          {field.type === 'richtext' ? (
+            <RichTextEditor
+              value={String(data[field.name] ?? '')}
+              onChange={(html) => setFieldValue(field.name, html)}
+            />
+          ) : field.type === 'image' ? (
+            <ImageUploadField
+              value={String(data[field.name] ?? '')}
+              onChange={(url) => setFieldValue(field.name, url)}
+            />
+          ) : field.type === 'checkbox' ? (
             <input
               id={field.name}
               name={field.name}

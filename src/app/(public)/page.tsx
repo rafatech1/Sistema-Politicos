@@ -7,27 +7,31 @@ import { AboutSection } from '@/components/public/home/about-section';
 import { BeliefsSection } from '@/components/public/home/beliefs-section';
 import { VideosSection } from '@/components/public/home/videos-section';
 import { InstagramSection } from '@/components/public/home/instagram-section';
+import { SocialBarSection } from '@/components/public/home/social-bar-section';
 import { OfficeSection } from '@/components/public/home/office-section';
 import { ContactSection } from '@/components/public/home/contact-section';
+import { Reveal } from '@/components/public/reveal';
 
 function renderSection(key: HomeSectionKey, socialData: Parameters<typeof ContactSection>[0]['socialData']) {
   switch (key) {
     case 'NEWS':
-      return <NewsSection key="news" />;
+      return <NewsSection />;
     case 'HIGHLIGHTS':
-      return <HighlightsSection key="highlights" />;
+      return <HighlightsSection />;
     case 'ABOUT':
-      return <AboutSection key="about" />;
+      return <AboutSection />;
     case 'BELIEFS':
-      return <BeliefsSection key="beliefs" />;
+      return <BeliefsSection />;
     case 'VIDEOS':
-      return <VideosSection key="videos" />;
+      return <VideosSection />;
     case 'INSTAGRAM':
-      return <InstagramSection key="instagram" />;
+      return <InstagramSection />;
+    case 'SOCIAL_BAR':
+      return <SocialBarSection />;
     case 'OFFICE':
-      return <OfficeSection key="office" />;
+      return <OfficeSection />;
     case 'CONTACT':
-      return <ContactSection key="contact" socialData={socialData} />;
+      return <ContactSection socialData={socialData} />;
     case 'HERO':
     default:
       return null;
@@ -57,7 +61,11 @@ export default async function HomePage() {
   return (
     <>
       {heroEnabled && <HeroSection />}
-      <div id="seguinte">{restSections.map((section) => renderSection(section.key, socialData))}</div>
+      <div id="seguinte">
+        {restSections.map((section) => (
+          <Reveal key={section.key}>{renderSection(section.key, socialData)}</Reveal>
+        ))}
+      </div>
     </>
   );
 }

@@ -15,6 +15,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         canManageLeads={hasPermission(user.role, 'leads:manage')}
         canManageSettings={hasPermission(user.role, 'settings:write')}
         canManageUsers={hasPermission(user.role, 'users:manage')}
+        canReadAudit={hasPermission(user.role, 'audit:read')}
       />
 
       <div className="flex-1">

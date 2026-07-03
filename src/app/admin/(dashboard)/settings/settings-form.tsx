@@ -1,6 +1,10 @@
 'use client';
 
 import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { RichTextEditor } from '@/components/admin/rich-text-editor';
+import { ImageUploadField } from '@/components/admin/image-upload-field';
+import { HomeSectionsEditor } from '@/components/admin/home-sections-editor';
+import { resolveHomeSections, type HomeSectionConfig } from '@/lib/home-sections';
 
 interface SiteSettingsFormData {
   mode: 'CAMPAIGN' | 'MANDATE';
@@ -43,6 +47,7 @@ interface SiteSettingsFormData {
   electionDate: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
+  homeSections?: unknown;
 }
 
 function Field({
@@ -86,6 +91,48 @@ function Field({
   );
 }
 
+function RichTextField({
+  label,
+  name,
+  value,
+  onChange,
+  disabled,
+}: {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (name: string, value: string) => void;
+  disabled: boolean;
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="text-sm font-medium text-slate-700">{label}</label>
+      <RichTextEditor value={value} onChange={(html) => onChange(name, html)} disabled={disabled} />
+    </div>
+  );
+}
+
+function ImageField({
+  label,
+  name,
+  value,
+  onChange,
+  disabled,
+}: {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (name: string, value: string) => void;
+  disabled: boolean;
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="text-sm font-medium text-slate-700">{label}</label>
+      <ImageUploadField value={value} onChange={(url) => onChange(name, url)} disabled={disabled} />
+    </div>
+  );
+}
+
 export function SettingsForm({
   initialSettings,
   canEdit,
@@ -94,6 +141,9 @@ export function SettingsForm({
   canEdit: boolean;
 }) {
   const [data, setData] = useState<SiteSettingsFormData>(initialSettings);
+  const [sections, setSections] = useState<HomeSectionConfig[]>(() =>
+    resolveHomeSections(initialSettings.homeSections),
+  );
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -101,6 +151,10 @@ export function SettingsForm({
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
     setData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  }
+
+  function setFieldValue(name: string, value: string) {
+    setData((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -112,7 +166,7 @@ export function SettingsForm({
       const res = await fetch('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, homeSections: sections }),
       });
 
       if (!res.ok) {
@@ -123,6 +177,7 @@ export function SettingsForm({
 
       const updated = await res.json();
       setData(updated);
+      setSections(resolveHomeSections(updated.homeSections));
       setMessage({ type: 'success', text: 'Configurações salvas com sucesso.' });
     } finally {
       setSaving(false);
@@ -190,10 +245,10 @@ export function SettingsForm({
                 style={{ backgroundColor: data.secondaryColor }}
               />
             </div>
-            <Field label="Logo (URL)" name="logoUrl" value={data.logoUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
-            <Field label="Favicon (URL)" name="faviconUrl" value={data.faviconUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
-            <Field label="Foto de perfil (seção Sobre)" name="profilePhotoUrl" value={data.profilePhotoUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
-            <Field label="Foto de fundo do Hero" name="heroBackgroundImageUrl" value={data.heroBackgroundImageUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
+            <ImageField label="Logo" name="logoUrl" value={data.logoUrl ?? ''} onChange={setFieldValue} disabled={!canEdit} />
+            <ImageField label="Favicon" name="faviconUrl" value={data.faviconUrl ?? ''} onChange={setFieldValue} disabled={!canEdit} />
+            <ImageField label="Foto de perfil (seção Sobre)" name="profilePhotoUrl" value={data.profilePhotoUrl ?? ''} onChange={setFieldValue} disabled={!canEdit} />
+            <ImageField label="Foto de fundo do Hero" name="heroBackgroundImageUrl" value={data.heroBackgroundImageUrl ?? ''} onChange={setFieldValue} disabled={!canEdit} />
           </div>
         </section>
 
@@ -201,7 +256,7 @@ export function SettingsForm({
           <h2 className="font-semibold text-slate-900">Sobre / Biografia resumida</h2>
           <Field label="Tagline (ex: Cristão, conservador e defensor da família)" name="aboutTagline" value={data.aboutTagline ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="Resumo curto (exibido na Home)" name="aboutShortText" value={data.aboutShortText ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
-          <Field label="Texto completo (página /sobre)" name="aboutFullText" value={data.aboutFullText ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
+          <RichTextField label="Texto completo (página /sobre)" name="aboutFullText" value={data.aboutFullText ?? ''} onChange={setFieldValue} disabled={!canEdit} />
         </section>
 
         <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
@@ -258,8 +313,17 @@ export function SettingsForm({
           <Field label="CNPJ da campanha" name="campaignCnpj" value={data.campaignCnpj ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="Identificação TSE (rodapé)" name="tseIdentification" value={data.tseIdentification ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
           <Field label="Texto do rodapé" name="footerText" value={data.footerText ?? ''} onChange={handleChange} disabled={!canEdit} />
-          <Field label="Política de privacidade (LGPD)" name="privacyPolicyText" value={data.privacyPolicyText ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
-          <Field label="Termos de uso" name="termsOfServiceText" value={data.termsOfServiceText ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
+          <RichTextField label="Política de privacidade (LGPD)" name="privacyPolicyText" value={data.privacyPolicyText ?? ''} onChange={setFieldValue} disabled={!canEdit} />
+          <RichTextField label="Termos de uso" name="termsOfServiceText" value={data.termsOfServiceText ?? ''} onChange={setFieldValue} disabled={!canEdit} />
+        </section>
+
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+          <h2 className="font-semibold text-slate-900">Curadoria da Home</h2>
+          <p className="text-xs text-slate-500">
+            Escolha quais seções aparecem na página inicial e em que ordem. O Hero segue sempre no
+            topo quando visível.
+          </p>
+          <HomeSectionsEditor sections={sections} onChange={setSections} disabled={!canEdit} />
         </section>
 
         <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">

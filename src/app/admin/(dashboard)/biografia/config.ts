@@ -13,7 +13,7 @@ export const FIELDS: FormFieldConfig[] = [
   { name: 'date', label: 'Data exata (opcional)', type: 'date' },
   { name: 'title', label: 'Título', required: true },
   { name: 'description', label: 'Descrição', type: 'textarea' },
-  { name: 'imageUrl', label: 'Imagem (URL)' },
+  { name: 'imageUrl', label: 'Imagem', type: 'image' },
   { name: 'order', label: 'Ordem', type: 'number' },
 ];
 

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { optionalEnum, optionalSlug } from '@/lib/validations/zod-helpers';
+import { optionalEnum, optionalImagePath, optionalSlug } from '@/lib/validations/zod-helpers';
 
 export const createProjetoDeLeiSchema = z.object({
   number: z.string().min(1, 'Número é obrigatório'),
@@ -9,7 +9,7 @@ export const createProjetoDeLeiSchema = z.object({
   content: z.string().min(1, 'Conteúdo é obrigatório'),
   status: optionalEnum(['APRESENTADO', 'EM_TRAMITACAO', 'APROVADO', 'REJEITADO', 'ARQUIVADO'], 'APRESENTADO'),
   externalUrl: z.string().url().optional().nullable().or(z.literal('')),
-  coverImageUrl: z.string().url().optional().nullable().or(z.literal('')),
+  coverImageUrl: optionalImagePath,
   isFeatured: z.boolean().default(false),
   publishStatus: optionalEnum(['DRAFT', 'PUBLISHED', 'ARCHIVED'], 'DRAFT'),
   order: z.coerce.number().int().default(0),

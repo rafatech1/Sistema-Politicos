@@ -54,10 +54,12 @@ export function SocialIcons({
   data,
   className,
   iconClassName,
+  iconSize = 16,
 }: {
   data: SocialLinksData;
   className?: string;
   iconClassName?: string;
+  iconSize?: number;
 }) {
   const active = SOCIAL_ENTRIES.filter((entry) => data[entry.key]);
   if (active.length === 0) return null;
@@ -76,7 +78,7 @@ export function SocialIcons({
             'flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white transition-all hover:-translate-y-0.5 hover:opacity-80'
           }
         >
-          <Icon size={16} />
+          <Icon size={iconSize} />
         </a>
       ))}
     </div>

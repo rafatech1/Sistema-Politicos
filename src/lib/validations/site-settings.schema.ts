@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { HOME_SECTION_KEYS } from '@/lib/home-sections';
+import { optionalImagePath } from '@/lib/validations/zod-helpers';
 
 const hexColor = z
   .string()
@@ -33,11 +34,11 @@ export const siteSettingsSchema = z.object({
   secondaryColor: hexColor.optional(),
   accentColor: hexColor.optional().nullable(),
 
-  logoUrl: optionalUrl,
-  logoDarkUrl: optionalUrl,
-  faviconUrl: optionalUrl,
-  profilePhotoUrl: optionalUrl,
-  heroBackgroundImageUrl: optionalUrl,
+  logoUrl: optionalImagePath,
+  logoDarkUrl: optionalImagePath,
+  faviconUrl: optionalImagePath,
+  profilePhotoUrl: optionalImagePath,
+  heroBackgroundImageUrl: optionalImagePath,
 
   aboutTagline: optionalText,
   aboutShortText: optionalText,

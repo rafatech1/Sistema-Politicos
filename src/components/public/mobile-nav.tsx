@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import type { NavItem } from '@/lib/nav';
 
-export function MobileNav({ navItems }: { navItems: NavItem[] }) {
+export function MobileNav({ navItems, transparent }: { navItems: NavItem[]; transparent?: boolean }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -14,7 +14,11 @@ export function MobileNav({ navItems }: { navItems: NavItem[] }) {
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? 'Fechar menu' : 'Abrir menu'}
         aria-expanded={open}
-        className="flex h-9 w-9 items-center justify-center rounded-md text-slate-700 transition-colors hover:bg-slate-100"
+        className={
+          transparent
+            ? 'flex h-9 w-9 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10'
+            : 'flex h-9 w-9 items-center justify-center rounded-md text-slate-700 transition-colors hover:bg-slate-100'
+        }
       >
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

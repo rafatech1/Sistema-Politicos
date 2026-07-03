@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { optionalDate, optionalNumber } from '@/lib/validations/zod-helpers';
+import { optionalDate, optionalImagePath, optionalNumber } from '@/lib/validations/zod-helpers';
 
 export const createBiografiaTimelineItemSchema = z.object({
   year: optionalNumber,
   date: optionalDate,
   title: z.string().min(1, 'Título é obrigatório'),
   description: z.string().optional().nullable(),
-  imageUrl: z.string().url().optional().nullable().or(z.literal('')),
+  imageUrl: optionalImagePath,
   order: z.coerce.number().int().default(0),
 });
 
