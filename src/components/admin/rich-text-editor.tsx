@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useEditor, EditorContent, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
@@ -139,6 +139,16 @@ export function RichTextEditor({
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
+
+  // useEditor só lê `content` na criação; resincroniza se `value` mudar por
+  // fora (ex: recarregar outro registro na mesma instância montada). Ignora
+  // enquanto o usuário está com foco no editor para não resetar o cursor.
+  useEffect(() => {
+    if (!editor || editor.isFocused) return;
+    if (editor.getHTML() !== value) {
+      editor.commands.setContent(value, { emitUpdate: false });
+    }
+  }, [value, editor]);
 
   if (!editor) {
     return (

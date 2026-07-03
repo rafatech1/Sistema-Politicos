@@ -2,13 +2,28 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
+/**
+ * Sempre nasce visível (SSR e no-JS incluídos) para nunca esconder conteúdo
+ * permanentemente caso o JS falhe/trave. Só entra em modo "animar" quando o
+ * próprio JS confirma, no mount, que o elemento nasce fora da viewport —
+ * conteúdo já visível na primeira dobra nunca é ocultado à espera do
+ * IntersectionObserver.
+ */
 export function Reveal({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [animated, setAnimated] = useState(false);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+
+    const rect = el.getBoundingClientRect();
+    const alreadyInView = rect.top < window.innerHeight * 0.9;
+    if (alreadyInView) return;
+
+    setVisible(false);
+    setAnimated(true);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -26,9 +41,11 @@ export function Reveal({ children }: { children: ReactNode }) {
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none motion-reduce:opacity-100 ${
-        visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-      }`}
+      className={`${
+        animated
+          ? 'transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:transform-none motion-reduce:opacity-100'
+          : ''
+      } ${visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
     >
       {children}
     </div>
