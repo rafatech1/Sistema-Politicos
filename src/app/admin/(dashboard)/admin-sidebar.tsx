@@ -67,7 +67,7 @@ export function AdminSidebar({
   if (settingsItems.length > 0) groups.push({ label: 'Administração', items: settingsItems });
 
   return (
-    <nav className="w-64 shrink-0 space-y-6 border-r border-slate-200 bg-white p-4">
+    <nav className="w-64 shrink-0 space-y-6 overflow-y-auto border-r border-slate-200 bg-white p-4">
       {groups.map((group) => (
         <div key={group.label}>
           <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400">{group.label}</p>
