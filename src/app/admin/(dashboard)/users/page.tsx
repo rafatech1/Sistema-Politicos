@@ -1,11 +1,11 @@
-import { getSessionUser } from '@/lib/auth/session';
+import { getCachedSessionUser } from '@/lib/auth/session.cached';
 import { hasPermission } from '@/lib/auth/rbac';
 import { listUsers } from '@/lib/services/user.service';
 import { UsersManager } from './users-manager';
 import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function AdminUsersPage() {
-  const user = await getSessionUser();
+  const user = await getCachedSessionUser();
 
   if (!user || !hasPermission(user.role, 'users:manage')) {
     return (

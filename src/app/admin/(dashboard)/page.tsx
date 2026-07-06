@@ -1,7 +1,7 @@
 import type { IconType } from 'react-icons';
 import { FaNewspaper, FaLightbulb, FaScaleBalanced, FaInbox, FaUsers } from 'react-icons/fa6';
 import { prisma } from '@/lib/prisma';
-import { getSessionUser } from '@/lib/auth/session';
+import { getCachedSessionUser } from '@/lib/auth/session.cached';
 import { hasPermission } from '@/lib/auth/rbac';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { AdminPageHeader } from '@/components/admin/page-header';
@@ -41,7 +41,7 @@ const ACTION_LABELS: Record<string, string> = {
 };
 
 export default async function AdminDashboardPage() {
-  const user = await getSessionUser();
+  const user = await getCachedSessionUser();
   const canManageLeads = user ? hasPermission(user.role, 'leads:manage') : false;
   const canReadAudit = user ? hasPermission(user.role, 'audit:read') : false;
 

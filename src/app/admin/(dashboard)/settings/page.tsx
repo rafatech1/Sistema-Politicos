@@ -1,11 +1,11 @@
-import { getSessionUser } from '@/lib/auth/session';
+import { getCachedSessionUser } from '@/lib/auth/session.cached';
 import { hasPermission } from '@/lib/auth/rbac';
-import { getSiteSettings } from '@/lib/services/site-settings.service';
+import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { SettingsForm } from './settings-form';
 import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function AdminSettingsPage() {
-  const user = await getSessionUser();
+  const user = await getCachedSessionUser();
 
   if (!user || !hasPermission(user.role, 'settings:read')) {
     return (
@@ -15,7 +15,7 @@ export default async function AdminSettingsPage() {
     );
   }
 
-  const settings = await getSiteSettings();
+  const settings = await getCachedSiteSettings();
   const canEdit = hasPermission(user.role, 'settings:write');
 
   return (

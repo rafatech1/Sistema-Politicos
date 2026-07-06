@@ -2,8 +2,17 @@
 
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { RichTextEditor } from '@/components/admin/rich-text-editor';
+import dynamic from 'next/dynamic';
 import { ImageUploadField } from '@/components/admin/image-upload-field';
+
+// Lazy: só ~3 dos 16 tipos de conteúdo usam campo richtext, mas o Tiptap
+// (@tiptap/react + starter-kit + extensions) é pesado — carregar incondicional
+// aqui inflava o bundle client de todo formulário do admin, mesmo quando
+// nenhum campo é richtext.
+const RichTextEditor = dynamic(
+  () => import('@/components/admin/rich-text-editor').then((m) => m.RichTextEditor),
+  { ssr: false, loading: () => <div className="h-40 animate-pulse rounded-md bg-slate-100" /> },
+);
 
 export interface FormFieldConfig {
   name: string;

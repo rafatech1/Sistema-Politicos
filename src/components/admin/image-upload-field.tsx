@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Image from 'next/image';
 
 export function ImageUploadField({
   value,
@@ -44,8 +45,9 @@ export function ImageUploadField({
   return (
     <div className="space-y-2">
       {value && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={value} alt="" className="h-24 w-auto rounded-md border border-slate-200 object-cover" />
+        <div className="relative h-24 w-24 overflow-hidden rounded-md border border-slate-200 bg-slate-50">
+          <Image src={value} alt="" fill className="object-contain" />
+        </div>
       )}
 
       <div className="flex items-center gap-3">

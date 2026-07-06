@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
-import { getSessionUser } from '@/lib/auth/session';
+import { getCachedSessionUser } from '@/lib/auth/session.cached';
 import { hasPermission } from '@/lib/auth/rbac';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { AdminShell } from './admin-shell';
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const user = await getSessionUser();
+  const user = await getCachedSessionUser();
   if (!user) redirect('/admin/login');
 
   const settings = await getCachedSiteSettings();
