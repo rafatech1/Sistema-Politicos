@@ -34,6 +34,7 @@ interface SiteSettingsFormData {
   linkedinUrl: string | null;
   telegramUrl: string | null;
   kwaiUrl: string | null;
+  extraLinks?: { label: string; url: string }[] | null;
   whatsappNumber: string | null;
   whatsappDefaultMessage: string | null;
   contactEmail: string | null;
@@ -47,6 +48,7 @@ interface SiteSettingsFormData {
   electionDate: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
+  ogImageUrl: string | null;
   homeSections?: unknown;
 }
 
@@ -157,6 +159,23 @@ export function SettingsForm({
     setData((prev) => ({ ...prev, [name]: value }));
   }
 
+  function addExtraLink() {
+    setData((prev) => ({ ...prev, extraLinks: [...(prev.extraLinks ?? []), { label: '', url: '' }] }));
+  }
+
+  function updateExtraLink(index: number, field: 'label' | 'url', value: string) {
+    setData((prev) => {
+      const list = [...(prev.extraLinks ?? [])];
+      const current = list[index] ?? { label: '', url: '' };
+      list[index] = field === 'label' ? { ...current, label: value } : { ...current, url: value };
+      return { ...prev, extraLinks: list };
+    });
+  }
+
+  function removeExtraLink(index: number) {
+    setData((prev) => ({ ...prev, extraLinks: (prev.extraLinks ?? []).filter((_, i) => i !== index) }));
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -245,10 +264,28 @@ export function SettingsForm({
                 style={{ backgroundColor: data.secondaryColor }}
               />
             </div>
+            <div className="flex items-end gap-3">
+              <div className="flex-1">
+                <Field label="Cor de destaque (accent)" name="accentColor" value={data.accentColor ?? ''} onChange={handleChange} disabled={!canEdit} />
+                <p className="mt-1 text-xs text-slate-400">
+                  Usada nas tags, botões de destaque e no CTA do Hero. Se vazio, usa a cor secundária.
+                </p>
+              </div>
+              <span
+                className="mb-1 h-9 w-9 flex-shrink-0 rounded-md border border-slate-300"
+                style={{ backgroundColor: data.accentColor || data.secondaryColor }}
+              />
+            </div>
             <ImageField label="Logo" name="logoUrl" value={data.logoUrl ?? ''} onChange={setFieldValue} disabled={!canEdit} />
             <ImageField label="Favicon" name="faviconUrl" value={data.faviconUrl ?? ''} onChange={setFieldValue} disabled={!canEdit} />
             <ImageField label="Foto de perfil (seção Sobre)" name="profilePhotoUrl" value={data.profilePhotoUrl ?? ''} onChange={setFieldValue} disabled={!canEdit} />
-            <ImageField label="Foto de fundo do Hero" name="heroBackgroundImageUrl" value={data.heroBackgroundImageUrl ?? ''} onChange={setFieldValue} disabled={!canEdit} />
+            <div>
+              <ImageField label="Foto do Hero" name="heroBackgroundImageUrl" value={data.heroBackgroundImageUrl ?? ''} onChange={setFieldValue} disabled={!canEdit} />
+              <p className="mt-1 text-xs text-slate-400">
+                Retrato do candidato exibido ao lado do título, em moldura vertical (proporção 4:5).
+                Prefira uma foto de corpo/busto, não uma imagem de fundo larga.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -273,12 +310,58 @@ export function SettingsForm({
             <Field label="YouTube" name="youtubeUrl" value={data.youtubeUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="TikTok" name="tiktokUrl" value={data.tiktokUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="X (Twitter)" name="twitterUrl" value={data.twitterUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
+            <Field label="LinkedIn" name="linkedinUrl" value={data.linkedinUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="Telegram" name="telegramUrl" value={data.telegramUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="Kwai" name="kwaiUrl" value={data.kwaiUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="WhatsApp (número)" name="whatsappNumber" value={data.whatsappNumber ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="Mensagem padrão do WhatsApp" name="whatsappDefaultMessage" value={data.whatsappDefaultMessage ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="E-mail de contato" name="contactEmail" value={data.contactEmail ?? ''} onChange={handleChange} disabled={!canEdit} />
             <Field label="Telefone de contato" name="contactPhone" value={data.contactPhone ?? ''} onChange={handleChange} disabled={!canEdit} />
+          </div>
+
+          <div className="space-y-3 border-t border-slate-100 pt-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-medium text-slate-700">Outras redes/links</h3>
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={addExtraLink}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  + Adicionar link
+                </button>
+              )}
+            </div>
+            <p className="text-xs text-slate-400">
+              Para redes fora da lista acima (ex: Threads, Bluesky, site pessoal). Aparecem com um ícone genérico de link.
+            </p>
+            {(data.extraLinks ?? []).map((link, index) => (
+              <div key={index} className="flex gap-2">
+                <input
+                  placeholder="Nome (ex: Threads)"
+                  value={link.label}
+                  onChange={(e) => updateExtraLink(index, 'label', e.target.value)}
+                  disabled={!canEdit}
+                  className="w-40 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-slate-100"
+                />
+                <input
+                  placeholder="https://…"
+                  value={link.url}
+                  onChange={(e) => updateExtraLink(index, 'url', e.target.value)}
+                  disabled={!canEdit}
+                  className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-slate-100"
+                />
+                {canEdit && (
+                  <button
+                    type="button"
+                    onClick={() => removeExtraLink(index)}
+                    className="shrink-0 text-sm text-red-500 hover:text-red-700"
+                  >
+                    Remover
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </section>
 
@@ -330,6 +413,12 @@ export function SettingsForm({
           <h2 className="font-semibold text-slate-900">SEO</h2>
           <Field label="Meta título" name="metaTitle" value={data.metaTitle ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="Meta descrição" name="metaDescription" value={data.metaDescription ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
+          <div>
+            <ImageField label="Imagem de compartilhamento (Open Graph)" name="ogImageUrl" value={data.ogImageUrl ?? ''} onChange={setFieldValue} disabled={!canEdit} />
+            <p className="mt-1 text-xs text-slate-400">
+              Aparece quando o link do site é compartilhado no WhatsApp, Facebook, X etc. Ideal 1200×630px.
+            </p>
+          </div>
         </section>
       </fieldset>
 

@@ -39,8 +39,14 @@ export const imagePath = z
   .string()
   .refine((val) => val.startsWith('/') || /^https?:\/\//.test(val), 'Informe uma URL de imagem válida');
 
-/** Versão opcional de imagePath vinda de um <input> não obrigatório: string vazia vira undefined. */
+/**
+ * Versão opcional de imagePath vinda de um <input> não obrigatório: string
+ * vazia vira `null` (não `undefined`) porque o Prisma trata `undefined` em
+ * `update.data` como "não mexe nesse campo" — se virasse undefined, limpar
+ * uma imagem no admin (logo, foto do Hero, OG image etc.) nunca removeria o
+ * valor salvo no banco, só pareceria limpo até a próxima leitura.
+ */
 export const optionalImagePath = z.preprocess(
-  (val) => (val === '' || val === null || val === undefined ? undefined : val),
-  imagePath.optional(),
+  (val) => (val === '' ? null : val),
+  imagePath.optional().nullable(),
 );

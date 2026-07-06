@@ -9,6 +9,7 @@ import {
   FaLinkedinIn,
   FaWhatsapp,
   FaVideo,
+  FaLink,
 } from 'react-icons/fa6';
 
 // Kwai não tem um ícone de marca nos sets disponíveis no react-icons; usamos
@@ -26,6 +27,20 @@ export interface SocialLinksData {
   kwaiUrl?: string | null;
   whatsappNumber?: string | null;
   whatsappDefaultMessage?: string | null;
+  /** Json bruto de site_settings.extraLinks — validado no schema de escrita,
+   *  então aqui só normalizamos defensivamente contra formato inesperado. */
+  extraLinks?: unknown;
+}
+
+function parseExtraLinks(value: unknown): { label: string; url: string }[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (item): item is { label: string; url: string } =>
+      typeof item === 'object' &&
+      item !== null &&
+      typeof (item as Record<string, unknown>).label === 'string' &&
+      typeof (item as Record<string, unknown>).url === 'string',
+  );
 }
 
 const SOCIAL_ENTRIES: Array<{
@@ -62,7 +77,12 @@ export function SocialIcons({
   iconSize?: number;
 }) {
   const active = SOCIAL_ENTRIES.filter((entry) => data[entry.key]);
-  if (active.length === 0) return null;
+  const extras = parseExtraLinks(data.extraLinks);
+  if (active.length === 0 && extras.length === 0) return null;
+
+  const linkClassName =
+    iconClassName ??
+    'flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white transition-all hover:-translate-y-0.5 hover:opacity-80';
 
   return (
     <div className={className ?? 'flex items-center gap-3'}>
@@ -73,12 +93,22 @@ export function SocialIcons({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={label}
-          className={
-            iconClassName ??
-            'flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white transition-all hover:-translate-y-0.5 hover:opacity-80'
-          }
+          className={linkClassName}
         >
           <Icon size={iconSize} />
+        </a>
+      ))}
+      {extras.map((link) => (
+        <a
+          key={link.url}
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={link.label}
+          title={link.label}
+          className={linkClassName}
+        >
+          <FaLink size={iconSize} />
         </a>
       ))}
     </div>

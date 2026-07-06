@@ -6,7 +6,29 @@ const hexColor = z
   .string()
   .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, 'Cor deve ser um hexadecimal válido (#RRGGBB)');
 
-const optionalUrl = z.string().url('URL inválida').optional().nullable();
+// Campos opcionais com formato (hex/URL/e-mail): o admin "desmarca" um campo
+// limpando o input no formulário, o que envia '' — sem o .or(z.literal(''))
+// isso cairia na regex/url/email e falharia a validação em vez de limpar o
+// campo. O transform normaliza '' para null antes de chegar no Prisma.
+const optionalHexColor = hexColor
+  .or(z.literal(''))
+  .optional()
+  .nullable()
+  .transform((v) => (v === '' ? null : v));
+const optionalUrl = z
+  .string()
+  .url('URL inválida')
+  .or(z.literal(''))
+  .optional()
+  .nullable()
+  .transform((v) => (v === '' ? null : v));
+const optionalEmail = z
+  .string()
+  .email('E-mail inválido')
+  .or(z.literal(''))
+  .optional()
+  .nullable()
+  .transform((v) => (v === '' ? null : v));
 const optionalText = z.string().optional().nullable();
 
 const extraLinkSchema = z.object({
@@ -32,7 +54,7 @@ export const siteSettingsSchema = z.object({
 
   primaryColor: hexColor.optional(),
   secondaryColor: hexColor.optional(),
-  accentColor: hexColor.optional().nullable(),
+  accentColor: optionalHexColor,
 
   logoUrl: optionalImagePath,
   logoDarkUrl: optionalImagePath,
@@ -61,7 +83,7 @@ export const siteSettingsSchema = z.object({
 
   whatsappNumber: optionalText,
   whatsappDefaultMessage: optionalText,
-  contactEmail: z.string().email().optional().nullable(),
+  contactEmail: optionalEmail,
   contactPhone: optionalText,
 
   tseIdentification: optionalText,
@@ -75,7 +97,7 @@ export const siteSettingsSchema = z.object({
 
   metaTitle: optionalText,
   metaDescription: optionalText,
-  ogImageUrl: optionalUrl,
+  ogImageUrl: optionalImagePath,
 });
 
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;

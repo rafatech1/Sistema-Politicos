@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Archivo, Inter } from 'next/font/google';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
+import { env } from '@/lib/env';
 import './globals.css';
 
 const inter = Inter({
@@ -33,6 +34,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
+    // Resolve caminhos relativos (ex: "/uploads/…" do upload local) para URL
+    // absoluta — sem isso, favicon/OG image quebram para consumidores
+    // externos (WhatsApp, Facebook) que não têm o contexto da página.
+    metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
     icons: settings.faviconUrl ? [{ url: settings.faviconUrl }] : undefined,
     openGraph: {
       title,

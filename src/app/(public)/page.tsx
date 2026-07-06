@@ -56,6 +56,7 @@ export default async function HomePage() {
     kwaiUrl: settings.kwaiUrl,
     whatsappNumber: settings.whatsappNumber,
     whatsappDefaultMessage: settings.whatsappDefaultMessage,
+    extraLinks: settings.extraLinks,
   };
 
   return (
