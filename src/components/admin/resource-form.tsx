@@ -8,7 +8,7 @@ import { ImageUploadField } from '@/components/admin/image-upload-field';
 export interface FormFieldConfig {
   name: string;
   label: string;
-  type?: 'text' | 'textarea' | 'checkbox' | 'select' | 'date' | 'number' | 'richtext' | 'image';
+  type?: 'text' | 'textarea' | 'checkbox' | 'select' | 'date' | 'datetime' | 'number' | 'richtext' | 'image';
   options?: { value: string; label: string }[];
   required?: boolean;
   helpText?: string;
@@ -22,6 +22,8 @@ function buildInitialState(fields: FormFieldConfig[], initialData?: Record<strin
       state[field.name] = Boolean(value);
     } else if (field.type === 'date' && typeof value === 'string') {
       state[field.name] = value.substring(0, 10);
+    } else if (field.type === 'datetime' && typeof value === 'string') {
+      state[field.name] = value.substring(0, 16);
     } else {
       state[field.name] = value ?? '';
     }
@@ -143,7 +145,7 @@ export function ResourceForm({
             <input
               id={field.name}
               name={field.name}
-              type={field.type ?? 'text'}
+              type={field.type === 'datetime' ? 'datetime-local' : (field.type ?? 'text')}
               required={field.required}
               value={String(data[field.name] ?? '')}
               onChange={handleChange}

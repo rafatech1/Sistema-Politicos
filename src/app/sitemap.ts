@@ -16,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/',
     '/sobre',
     '/noticias',
+    '/agenda',
     '/busca',
     '/termos-de-uso',
     '/politica-de-privacidade',
@@ -31,6 +32,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: post.updatedAt,
   }));
 
+  const eventos = await prisma.evento.findMany({
+    where: { isPublic: true },
+    select: { slug: true, updatedAt: true },
+  });
+  const eventoRoutes = eventos.map((evento) => ({
+    url: `${base}/agenda/${evento.slug}`,
+    lastModified: evento.updatedAt,
+  }));
+
   const contentRoutes =
     settings.mode === 'MANDATE'
       ? await prisma.projetoDeLei
@@ -40,5 +50,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           .findMany({ where: { status: 'PUBLISHED' }, select: { slug: true, updatedAt: true } })
           .then((items) => items.map((item) => ({ url: `${base}/propostas/${item.slug}`, lastModified: item.updatedAt })));
 
-  return [...staticRoutes, ...postRoutes, ...contentRoutes];
+  return [...staticRoutes, ...postRoutes, ...eventoRoutes, ...contentRoutes];
 }

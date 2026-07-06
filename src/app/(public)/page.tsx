@@ -3,6 +3,7 @@ import { resolveHomeSections, type HomeSectionKey } from '@/lib/home-sections';
 import { HeroSection } from '@/components/public/home/hero-section';
 import { NewsSection } from '@/components/public/home/news-section';
 import { HighlightsSection } from '@/components/public/home/highlights-section';
+import { AgendaSection } from '@/components/public/home/agenda-section';
 import { AboutSection } from '@/components/public/home/about-section';
 import { BeliefsSection } from '@/components/public/home/beliefs-section';
 import { VideosSection } from '@/components/public/home/videos-section';
@@ -18,6 +19,8 @@ function renderSection(key: HomeSectionKey, socialData: Parameters<typeof Contac
       return <NewsSection />;
     case 'HIGHLIGHTS':
       return <HighlightsSection />;
+    case 'AGENDA':
+      return <AgendaSection />;
     case 'ABOUT':
       return <AboutSection />;
     case 'BELIEFS':

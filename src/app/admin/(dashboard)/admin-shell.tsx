@@ -9,6 +9,7 @@ import type { IconType } from 'react-icons';
 import {
   FaGaugeHigh,
   FaNewspaper,
+  FaCalendarDays,
   FaTags,
   FaLightbulb,
   FaLayerGroup,
@@ -93,6 +94,7 @@ export function AdminShell({
       label: 'Conteúdo',
       items: [
         { label: 'Notícias', href: '/admin/noticias', icon: FaNewspaper },
+        { label: 'Agenda de Campanha', href: '/admin/agenda', icon: FaCalendarDays },
         { label: 'Categorias', href: '/admin/categorias', icon: FaTags },
         { label: 'Propostas', href: '/admin/propostas', icon: FaLightbulb },
         { label: 'Eixos Temáticos', href: '/admin/eixos-tematicos', icon: FaLayerGroup },

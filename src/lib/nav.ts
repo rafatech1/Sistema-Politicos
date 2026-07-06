@@ -10,6 +10,7 @@ export function getNavItems(mode: SiteMode): NavItem[] {
   return [
     { label: 'Início', href: '/' },
     { label: 'Notícias', href: '/noticias' },
+    { label: 'Agenda', href: '/agenda' },
     mode === 'MANDATE'
       ? { label: 'Projetos de Lei', href: '/projetos-de-lei' }
       : { label: 'Propostas', href: '/propostas' },
