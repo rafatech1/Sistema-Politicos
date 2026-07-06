@@ -1,6 +1,7 @@
 import { getSessionUser } from '@/lib/auth/session';
 import { hasPermission } from '@/lib/auth/rbac';
 import { NoticiasTable } from './table';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function NoticiasPage() {
   const user = await getSessionUser();
@@ -14,7 +15,7 @@ export default async function NoticiasPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Notícias</h1>
+      <AdminPageHeader title="Notícias" />
       <NoticiasTable canWrite={hasPermission(user.role, 'content:write')} />
     </div>
   );

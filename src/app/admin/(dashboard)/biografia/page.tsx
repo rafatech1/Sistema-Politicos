@@ -1,6 +1,7 @@
 import { getSessionUser } from '@/lib/auth/session';
 import { hasPermission } from '@/lib/auth/rbac';
 import { BiografiaTable } from './table';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function BiografiaAdminPage() {
   const user = await getSessionUser();
@@ -14,7 +15,7 @@ export default async function BiografiaAdminPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Biografia — Linha do tempo</h1>
+      <AdminPageHeader title="Biografia — Linha do tempo" />
       <BiografiaTable canWrite={hasPermission(user.role, 'content:write')} />
     </div>
   );

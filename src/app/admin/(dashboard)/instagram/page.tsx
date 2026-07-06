@@ -1,6 +1,7 @@
 import { getSessionUser } from '@/lib/auth/session';
 import { hasPermission } from '@/lib/auth/rbac';
 import { InstagramTable } from './table';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function InstagramAdminPage() {
   const user = await getSessionUser();
@@ -14,7 +15,7 @@ export default async function InstagramAdminPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Instagram em destaque</h1>
+      <AdminPageHeader title="Instagram em destaque" />
       <InstagramTable canWrite={hasPermission(user.role, 'content:write')} />
     </div>
   );

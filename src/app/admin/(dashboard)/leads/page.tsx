@@ -1,6 +1,7 @@
 import { getSessionUser } from '@/lib/auth/session';
 import { hasPermission } from '@/lib/auth/rbac';
 import { LeadsManager } from './leads-manager';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function LeadsAdminPage() {
   const user = await getSessionUser();
@@ -14,7 +15,7 @@ export default async function LeadsAdminPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Leads</h1>
+      <AdminPageHeader title="Leads" />
       <LeadsManager />
     </div>
   );

@@ -1,6 +1,7 @@
 import { getSessionUser } from '@/lib/auth/session';
 import { hasPermission } from '@/lib/auth/rbac';
 import { CrencasTable } from './table';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function CrencasAdminPage() {
   const user = await getSessionUser();
@@ -14,7 +15,7 @@ export default async function CrencasAdminPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">No que acredito</h1>
+      <AdminPageHeader title="No que acredito" />
       <CrencasTable canWrite={hasPermission(user.role, 'content:write')} />
     </div>
   );

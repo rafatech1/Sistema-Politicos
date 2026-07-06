@@ -4,6 +4,7 @@ import { hasPermission } from '@/lib/auth/rbac';
 import { prisma } from '@/lib/prisma';
 import { ResourceForm } from '@/components/admin/resource-form';
 import { FIELDS } from '../config';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function EditarEmendaPage({ params }: { params: { id: string } }) {
   const user = await getSessionUser();
@@ -20,7 +21,7 @@ export default async function EditarEmendaPage({ params }: { params: { id: strin
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Editar emenda parlamentar</h1>
+      <AdminPageHeader title="Editar emenda parlamentar" backHref="/admin/emendas" />
       <ResourceForm
         fields={FIELDS}
         apiPath="/api/admin/emendas"

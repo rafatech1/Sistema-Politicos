@@ -4,6 +4,7 @@ import { hasPermission } from '@/lib/auth/rbac';
 import { prisma } from '@/lib/prisma';
 import { ResourceForm } from '@/components/admin/resource-form';
 import { buildFields } from '../config';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function EditarPropostaPage({ params }: { params: { id: string } }) {
   const user = await getSessionUser();
@@ -23,7 +24,7 @@ export default async function EditarPropostaPage({ params }: { params: { id: str
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Editar proposta</h1>
+      <AdminPageHeader title="Editar proposta" backHref="/admin/propostas" />
       <ResourceForm
         fields={buildFields(eixos)}
         apiPath="/api/admin/propostas"

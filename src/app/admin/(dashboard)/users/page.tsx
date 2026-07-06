@@ -2,6 +2,7 @@ import { getSessionUser } from '@/lib/auth/session';
 import { hasPermission } from '@/lib/auth/rbac';
 import { listUsers } from '@/lib/services/user.service';
 import { UsersManager } from './users-manager';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function AdminUsersPage() {
   const user = await getSessionUser();
@@ -18,7 +19,7 @@ export default async function AdminUsersPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Usuários da equipe</h1>
+      <AdminPageHeader title="Usuários da equipe" />
       <UsersManager initialUsers={JSON.parse(JSON.stringify(users))} currentUserId={user.id} />
     </div>
   );

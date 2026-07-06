@@ -2,6 +2,7 @@ import { getSessionUser } from '@/lib/auth/session';
 import { hasPermission } from '@/lib/auth/rbac';
 import { ResourceForm } from '@/components/admin/resource-form';
 import { FIELDS } from '../config';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function NovoProjetoDeLeiPage() {
   const user = await getSessionUser();
@@ -15,7 +16,7 @@ export default async function NovoProjetoDeLeiPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Novo projeto de lei</h1>
+      <AdminPageHeader title="Novo projeto de lei" backHref="/admin/projetos-de-lei" />
       <ResourceForm fields={FIELDS} apiPath="/api/admin/projetos-de-lei" redirectTo="/admin/projetos-de-lei" />
     </div>
   );

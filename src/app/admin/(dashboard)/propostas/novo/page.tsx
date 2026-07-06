@@ -3,6 +3,7 @@ import { hasPermission } from '@/lib/auth/rbac';
 import { prisma } from '@/lib/prisma';
 import { ResourceForm } from '@/components/admin/resource-form';
 import { buildFields } from '../config';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function NovaPropostaPage() {
   const user = await getSessionUser();
@@ -18,7 +19,7 @@ export default async function NovaPropostaPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Nova proposta</h1>
+      <AdminPageHeader title="Nova proposta" backHref="/admin/propostas" />
       <ResourceForm fields={buildFields(eixos)} apiPath="/api/admin/propostas" redirectTo="/admin/propostas" />
     </div>
   );

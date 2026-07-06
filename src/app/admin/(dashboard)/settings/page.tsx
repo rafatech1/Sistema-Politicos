@@ -2,6 +2,7 @@ import { getSessionUser } from '@/lib/auth/session';
 import { hasPermission } from '@/lib/auth/rbac';
 import { getSiteSettings } from '@/lib/services/site-settings.service';
 import { SettingsForm } from './settings-form';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function AdminSettingsPage() {
   const user = await getSessionUser();
@@ -19,7 +20,7 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Configurações do Site</h1>
+      <AdminPageHeader title="Configurações do Site" />
       <SettingsForm initialSettings={JSON.parse(JSON.stringify(settings))} canEdit={canEdit} />
     </div>
   );

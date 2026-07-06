@@ -4,6 +4,7 @@ import { hasPermission } from '@/lib/auth/rbac';
 import { prisma } from '@/lib/prisma';
 import { ResourceForm } from '@/components/admin/resource-form';
 import { buildFields } from '../config';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function EditarNoticiaPage({ params }: { params: { id: string } }) {
   const user = await getSessionUser();
@@ -23,7 +24,7 @@ export default async function EditarNoticiaPage({ params }: { params: { id: stri
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Editar notícia</h1>
+      <AdminPageHeader title="Editar notícia" backHref="/admin/noticias" />
       <ResourceForm
         fields={buildFields(categories)}
         apiPath="/api/admin/noticias"

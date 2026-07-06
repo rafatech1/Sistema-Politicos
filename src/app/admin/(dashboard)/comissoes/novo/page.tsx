@@ -2,6 +2,7 @@ import { getSessionUser } from '@/lib/auth/session';
 import { hasPermission } from '@/lib/auth/rbac';
 import { ResourceForm } from '@/components/admin/resource-form';
 import { FIELDS } from '../config';
+import { AdminPageHeader } from '@/components/admin/page-header';
 
 export default async function NovaComissaoPage() {
   const user = await getSessionUser();
@@ -15,7 +16,7 @@ export default async function NovaComissaoPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-slate-900">Nova comissão</h1>
+      <AdminPageHeader title="Nova comissão" backHref="/admin/comissoes" />
       <ResourceForm fields={FIELDS} apiPath="/api/admin/comissoes" redirectTo="/admin/comissoes" />
     </div>
   );
