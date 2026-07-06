@@ -28,9 +28,9 @@ export async function InstagramSection() {
               href={post.postUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
+              className="group block overflow-hidden border-2 border-slate-900 bg-white shadow-hard-sm transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard"
             >
-              <div className="relative aspect-square overflow-hidden bg-slate-100">
+              <div className="relative aspect-square overflow-hidden border-b-2 border-slate-900 bg-slate-100">
                 <Image
                   src={post.imageUrl}
                   alt={post.caption ?? 'Post do Instagram'}
@@ -39,7 +39,7 @@ export async function InstagramSection() {
                 />
                 <span
                   aria-hidden
-                  className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-primary shadow-card"
+                  className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center border-2 border-slate-900 bg-white text-primary"
                 >
                   <FaInstagram size={15} />
                 </span>

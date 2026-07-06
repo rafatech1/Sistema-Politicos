@@ -36,12 +36,12 @@ export function ElectionCountdown({ electionDateIso }: { electionDateIso: string
       {units.map(([label, value]) => (
         <div
           key={label}
-          className="flex min-w-[3.25rem] flex-col items-center rounded-lg border border-white/15 bg-white/10 px-3 py-2 backdrop-blur"
+          className="flex min-w-[3.25rem] flex-col items-center border-2 border-white bg-slate-800 px-3 py-2"
         >
-          <span className="font-display text-xl font-semibold tabular-nums text-white">
+          <span className="font-display text-xl font-black tabular-nums text-white">
             {String(value).padStart(2, '0')}
           </span>
-          <span className="text-[10px] uppercase tracking-wide text-white/70">{label}</span>
+          <span className="text-[10px] font-bold uppercase tracking-wide text-white/70">{label}</span>
         </div>
       ))}
     </div>

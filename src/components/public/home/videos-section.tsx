@@ -30,10 +30,12 @@ export async function VideosSection() {
             return (
               <div
                 key={video.id}
-                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
+                className="overflow-hidden border-2 border-slate-900 bg-white shadow-hard-sm transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard"
               >
                 <YouTubeFacade videoId={videoId} title={video.title} thumbnailUrl={thumbnailUrl} />
-                <p className="p-4 font-display text-sm font-medium text-slate-800">{video.title}</p>
+                <p className="border-t-2 border-slate-900 p-4 font-display text-sm font-bold text-slate-800">
+                  {video.title}
+                </p>
               </div>
             );
           })}

@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { Metadata } from 'next';
-import { Fraunces, Inter } from 'next/font/google';
+import { Archivo, Inter } from 'next/font/google';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import './globals.css';
 
@@ -10,11 +10,10 @@ const inter = Inter({
   display: 'swap',
 });
 
-// axes: ['opsz'] é o que dá à Fraunces seu caráter editorial (sem isso, o
-// next/font só carrega o eixo wght e ela fica "só mais uma serif genérica").
-const fraunces = Fraunces({
+// Grotesca condensada/bold — carrega variável (sem "weight" fixo) pra cobrir
+// do peso 400 ao 900 usado nos números/headlines de destaque do santinho.
+const archivo = Archivo({
   subsets: ['latin', 'latin-ext'],
-  axes: ['opsz'],
   variable: '--font-display',
   display: 'swap',
 });
@@ -55,7 +54,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   };
 
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${fraunces.variable}`} style={themeStyle}>
+    <html lang="pt-BR" className={`${inter.variable} ${archivo.variable}`} style={themeStyle}>
       <body>{children}</body>
     </html>
   );

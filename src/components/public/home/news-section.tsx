@@ -21,9 +21,9 @@ export async function NewsSection() {
             <Link
               key={post.id}
               href={`/noticias/${post.slug}`}
-              className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
+              className="group block overflow-hidden border-2 border-slate-900 bg-white shadow-hard-sm transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard"
             >
-              <div className="relative aspect-video overflow-hidden bg-slate-100">
+              <div className="relative aspect-video overflow-hidden border-b-2 border-slate-900 bg-slate-100">
                 {post.coverImageUrl && (
                   <Image
                     src={post.coverImageUrl}
@@ -33,18 +33,18 @@ export async function NewsSection() {
                   />
                 )}
                 {post.category && (
-                  <span className="absolute left-3 top-3 rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-white">
+                  <span className="absolute left-3 top-3 border-2 border-slate-900 bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-slate-900">
                     {post.category.name}
                   </span>
                 )}
               </div>
               <div className="p-5">
                 {post.publishedAt && (
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
                     {post.publishedAt.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
                   </p>
                 )}
-                <h3 className="mt-1.5 font-display font-semibold text-slate-900 transition-colors group-hover:text-primary">
+                <h3 className="mt-1.5 font-display font-black uppercase leading-tight text-slate-900 transition-colors group-hover:text-primary">
                   {post.title}
                 </h3>
                 {post.excerpt && <p className="mt-2 line-clamp-2 text-sm text-slate-600">{post.excerpt}</p>}

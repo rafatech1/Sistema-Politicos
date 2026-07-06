@@ -13,7 +13,7 @@ export async function OfficeSection() {
           {settings.officeAddress && <p className="leading-relaxed text-slate-600">{settings.officeAddress}</p>}
         </div>
         {settings.officeMapEmbedUrl && (
-          <div className="aspect-video overflow-hidden rounded-2xl border border-slate-200 shadow-card">
+          <div className="aspect-video overflow-hidden border-2 border-slate-900 shadow-hard">
             <iframe
               src={settings.officeMapEmbedUrl}
               className="h-full w-full"

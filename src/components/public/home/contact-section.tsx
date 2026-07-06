@@ -47,8 +47,8 @@ export function ContactSection({ socialData }: { socialData: SocialLinksData }) 
   }
 
   const fieldClassName =
-    'w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 transition-colors placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20';
-  const labelClassName = 'mb-1.5 block text-sm font-medium text-slate-700';
+    'w-full rounded-md border-2 border-slate-900 px-3.5 py-2.5 text-sm text-slate-900 transition-colors placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary';
+  const labelClassName = 'mb-1.5 block text-sm font-bold uppercase tracking-wide text-slate-700';
 
   return (
     <section id="contato" className="bg-slate-50 px-6 py-20 sm:py-28">
@@ -67,7 +67,7 @@ export function ContactSection({ socialData }: { socialData: SocialLinksData }) 
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-card sm:p-8"
+          className="space-y-4 border-2 border-slate-900 bg-white p-6 shadow-hard sm:p-8"
         >
           <input
             type="text"
@@ -189,7 +189,7 @@ export function ContactSection({ socialData }: { socialData: SocialLinksData }) 
           <button
             type="submit"
             disabled={status === 'sending'}
-            className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:pointer-events-none disabled:opacity-50"
+            className="border-2 border-slate-900 bg-accent px-6 py-2.5 text-sm font-black uppercase tracking-wide text-slate-900 shadow-hard-sm transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard disabled:pointer-events-none disabled:opacity-50"
           >
             {status === 'sending' ? 'Enviando…' : 'Enviar mensagem'}
           </button>

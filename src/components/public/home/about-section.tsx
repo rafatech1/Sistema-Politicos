@@ -10,16 +10,15 @@ export async function AboutSection() {
     <section className="bg-white px-6 py-20 sm:py-28">
       <div className="mx-auto grid max-w-6xl gap-12 sm:grid-cols-[340px_1fr] sm:items-center">
         {settings.profilePhotoUrl && (
-          <div className="relative mx-auto w-64 sm:w-full">
-            <div aria-hidden className="absolute -inset-3 rounded-2xl border-2 border-primary/20" />
-            <div className="relative aspect-square overflow-hidden rounded-2xl bg-slate-100 shadow-card">
-              <Image src={settings.profilePhotoUrl} alt={settings.candidateName} fill className="object-cover" />
-            </div>
+          <div className="relative mx-auto aspect-square w-64 overflow-hidden border-4 border-slate-900 bg-slate-100 shadow-hard sm:w-full">
+            <Image src={settings.profilePhotoUrl} alt={settings.candidateName} fill className="object-cover" />
           </div>
         )}
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">Sobre</p>
-          <h2 className="font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+          <p className="mb-3 inline-block -rotate-1 border-2 border-slate-900 bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-slate-900">
+            Sobre
+          </p>
+          <h2 className="font-display text-3xl font-black uppercase leading-[0.95] tracking-tight text-slate-900 sm:text-4xl">
             {settings.candidateName}
           </h2>
           {settings.aboutTagline && (
@@ -30,7 +29,7 @@ export async function AboutSection() {
           )}
           <Link
             href="/sobre"
-            className="group/cta mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-slate-900"
+            className="group/cta mt-6 inline-flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-slate-900 transition-colors hover:text-primary"
           >
             Saiba mais
             <span aria-hidden className="transition-transform group-hover/cta:translate-x-1">

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import type { NavItem } from '@/lib/nav';
 
-export function MobileNav({ navItems, transparent }: { navItems: NavItem[]; transparent?: boolean }) {
+export function MobileNav({ navItems }: { navItems: NavItem[] }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -14,11 +14,7 @@ export function MobileNav({ navItems, transparent }: { navItems: NavItem[]; tran
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? 'Fechar menu' : 'Abrir menu'}
         aria-expanded={open}
-        className={
-          transparent
-            ? 'flex h-9 w-9 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10'
-            : 'flex h-9 w-9 items-center justify-center rounded-md text-slate-700 transition-colors hover:bg-slate-100'
-        }
+        className="flex h-9 w-9 items-center justify-center rounded-md text-slate-700 transition-colors hover:bg-slate-100"
       >
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -32,14 +28,14 @@ export function MobileNav({ navItems, transparent }: { navItems: NavItem[]; tran
       </button>
 
       {open && (
-        <nav className="animate-hero-in absolute inset-x-0 top-full border-b border-slate-200 bg-white px-6 py-5 shadow-card">
+        <nav className="animate-hero-in absolute inset-x-0 top-full border-b-2 border-slate-900 bg-white px-6 py-5 shadow-hard">
           <ul className="flex flex-col gap-4">
             {navItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="block font-display text-base font-medium text-slate-800 transition-colors hover:text-primary"
+                  className="block font-display text-base font-bold uppercase text-slate-800 transition-colors hover:text-primary"
                 >
                   {item.label}
                 </Link>

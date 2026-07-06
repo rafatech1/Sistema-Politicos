@@ -14,15 +14,17 @@ export function SectionHeading({
   ctaExternal?: boolean;
 }) {
   const ctaClassName =
-    'group/cta inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-slate-900';
+    'group/cta inline-flex shrink-0 items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-slate-900 transition-colors hover:text-primary';
 
   return (
     <div className="mb-10 flex items-end justify-between gap-4">
       <div>
         {eyebrow && (
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">{eyebrow}</p>
+          <p className="mb-3 inline-block -rotate-1 border-2 border-slate-900 bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-slate-900">
+            {eyebrow}
+          </p>
         )}
-        <h2 className="font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+        <h2 className="font-display text-3xl font-black uppercase leading-[0.95] tracking-tight text-slate-900 sm:text-4xl">
           {title}
         </h2>
       </div>
