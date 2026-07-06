@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
-import { FaTrashCan } from 'react-icons/fa6';
+import { Fragment, useState, type FormEvent } from 'react';
+import { FaTrashCan, FaKey } from 'react-icons/fa6';
 import { Badge } from '@/components/admin/badge';
 
 interface UserRow {
@@ -28,6 +28,10 @@ export function UsersManager({
   }>({ name: '', email: '', password: '', role: 'EDITOR' });
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [resetTargetId, setResetTargetId] = useState<string | null>(null);
+  const [resetPassword, setResetPassword] = useState('');
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [resetSaving, setResetSaving] = useState(false);
 
   async function handleCreate(e: FormEvent) {
     e.preventDefault();
@@ -72,6 +76,37 @@ export function UsersManager({
     if (res.ok) setUsers((prev) => prev.filter((x) => x.id !== u.id));
   }
 
+  function openResetPassword(id: string) {
+    setResetTargetId(id);
+    setResetPassword('');
+    setResetError(null);
+  }
+
+  async function handleResetPassword(e: FormEvent, u: UserRow) {
+    e.preventDefault();
+    setResetError(null);
+    setResetSaving(true);
+
+    try {
+      const res = await fetch(`/api/admin/users/${u.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: resetPassword }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setResetError(body.error ?? 'Erro ao redefinir senha.');
+        return;
+      }
+
+      setResetTargetId(null);
+      setResetPassword('');
+    } finally {
+      setResetSaving(false);
+    }
+  }
+
   return (
     <div className="space-y-8">
       <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
@@ -87,32 +122,76 @@ export function UsersManager({
           </thead>
           <tbody>
             {users.map((u) => (
-              <tr key={u.id} className="border-t border-slate-100 transition-colors hover:bg-slate-50">
-                <td className="px-4 py-3">{u.name}</td>
-                <td className="px-4 py-3">{u.email}</td>
-                <td className="px-4 py-3">{u.role === 'ADMIN' ? 'Administrador' : 'Editor'}</td>
-                <td className="px-4 py-3">
-                  <Badge tone={u.isActive ? 'green' : 'gray'}>{u.isActive ? 'Ativo' : 'Inativo'}</Badge>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-2">
-                    <button
-                      onClick={() => handleToggleActive(u)}
-                      className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-primary hover:text-primary"
-                    >
-                      {u.isActive ? 'Desativar' : 'Ativar'}
-                    </button>
-                    <button
-                      onClick={() => handleDelete(u)}
-                      disabled={u.id === currentUserId}
-                      className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:pointer-events-none disabled:opacity-30"
-                    >
-                      <FaTrashCan size={11} />
-                      Remover
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              <Fragment key={u.id}>
+                <tr className="border-t border-slate-100 transition-colors hover:bg-slate-50">
+                  <td className="px-4 py-3">{u.name}</td>
+                  <td className="px-4 py-3">{u.email}</td>
+                  <td className="px-4 py-3">{u.role === 'ADMIN' ? 'Administrador' : 'Editor'}</td>
+                  <td className="px-4 py-3">
+                    <Badge tone={u.isActive ? 'green' : 'gray'}>{u.isActive ? 'Ativo' : 'Inativo'}</Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => openResetPassword(u.id)}
+                        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-primary hover:text-primary"
+                      >
+                        <FaKey size={11} />
+                        Redefinir senha
+                      </button>
+                      <button
+                        onClick={() => handleToggleActive(u)}
+                        className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-primary hover:text-primary"
+                      >
+                        {u.isActive ? 'Desativar' : 'Ativar'}
+                      </button>
+                      <button
+                        onClick={() => handleDelete(u)}
+                        disabled={u.id === currentUserId}
+                        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:pointer-events-none disabled:opacity-30"
+                      >
+                        <FaTrashCan size={11} />
+                        Remover
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {resetTargetId === u.id && (
+                  <tr className="border-t border-slate-100 bg-slate-50">
+                    <td colSpan={5} className="px-4 py-3">
+                      <form
+                        onSubmit={(e) => handleResetPassword(e, u)}
+                        className="flex flex-wrap items-center gap-2"
+                      >
+                        <span className="text-sm text-slate-600">Nova senha para {u.name}:</span>
+                        <input
+                          required
+                          type="password"
+                          autoFocus
+                          value={resetPassword}
+                          onChange={(e) => setResetPassword(e.target.value)}
+                          className="rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                        />
+                        <button
+                          type="submit"
+                          disabled={resetSaving}
+                          className="rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-white transition-colors hover:opacity-90 disabled:opacity-50"
+                        >
+                          {resetSaving ? 'Salvando…' : 'Salvar'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setResetTargetId(null)}
+                          className="rounded-md border border-slate-200 px-4 py-1.5 text-sm text-slate-600 hover:border-slate-300"
+                        >
+                          Cancelar
+                        </button>
+                        {resetError && <p className="w-full text-sm text-red-600">{resetError}</p>}
+                      </form>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             ))}
           </tbody>
         </table>
