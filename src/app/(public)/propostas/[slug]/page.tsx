@@ -30,15 +30,17 @@ export default async function PropostaPage({ params }: { params: { slug: string 
   return (
     <article className="mx-auto max-w-3xl px-6 py-16">
       {proposta.eixoTematico && (
-        <span className="text-xs font-semibold uppercase tracking-wide text-primary">
+        <span className="mb-3 inline-block -rotate-1 border-2 border-slate-900 bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-slate-900">
           {proposta.eixoTematico.name}
         </span>
       )}
-      <h1 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">{proposta.title}</h1>
+      <h1 className="font-display text-3xl font-black uppercase leading-[0.95] text-slate-900 sm:text-4xl">
+        {proposta.title}
+      </h1>
       {proposta.summary && <p className="mt-4 text-lg text-slate-600">{proposta.summary}</p>}
 
       <div
-        className="prose prose-slate mt-8 max-w-none"
+        className="prose prose-slate mt-8 max-w-none prose-headings:font-display prose-headings:font-black prose-headings:uppercase prose-a:font-bold prose-a:text-primary"
         dangerouslySetInnerHTML={{ __html: sanitizeRichText(proposta.content) }}
       />
     </article>

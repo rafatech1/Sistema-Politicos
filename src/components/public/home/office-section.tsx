@@ -1,5 +1,5 @@
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
-import { SectionHeading } from './section-heading';
+import { SectionHeading } from '@/components/public/section-heading';
 
 export async function OfficeSection() {
   const settings = await getCachedSiteSettings();

@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { SocialIcons, type SocialLinksData } from '@/components/public/social-icons';
-import { SectionHeading } from './section-heading';
+import { SectionHeading } from '@/components/public/section-heading';
 
 export function ContactSection({ socialData }: { socialData: SocialLinksData }) {
   const [form, setForm] = useState({

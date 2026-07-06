@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { extractYouTubeId, getYouTubeThumbnailUrl } from '@/lib/utils/youtube';
 import { YouTubeFacade } from '@/components/public/youtube-facade';
-import { SectionHeading } from './section-heading';
+import { SectionHeading } from '@/components/public/section-heading';
 
 export async function VideosSection() {
   const [videos, settings] = await Promise.all([

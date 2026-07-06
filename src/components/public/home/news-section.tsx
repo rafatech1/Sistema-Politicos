@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
-import { SectionHeading } from './section-heading';
+import { SectionHeading } from '@/components/public/section-heading';
 
 export async function NewsSection() {
   const posts = await prisma.post.findMany({

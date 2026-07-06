@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { SectionHeading } from './section-heading';
+import { SectionHeading } from '@/components/public/section-heading';
 
 export async function BeliefsSection() {
   const beliefs = await prisma.beliefValue.findMany({

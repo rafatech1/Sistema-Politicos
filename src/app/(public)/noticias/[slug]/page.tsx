@@ -38,19 +38,23 @@ export default async function NoticiaPage({ params }: { params: { slug: string }
   return (
     <article className="mx-auto max-w-3xl px-6 py-16">
       {post.category && (
-        <span className="text-xs font-semibold uppercase tracking-wide text-primary">{post.category.name}</span>
+        <span className="mb-3 inline-block -rotate-1 border-2 border-slate-900 bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-slate-900">
+          {post.category.name}
+        </span>
       )}
-      <h1 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">{post.title}</h1>
-      <p className="mt-3 text-sm text-slate-500">{formatDate(post.publishedAt)}</p>
+      <h1 className="font-display text-3xl font-black uppercase leading-[0.95] text-slate-900 sm:text-4xl">
+        {post.title}
+      </h1>
+      <p className="mt-3 text-xs font-bold uppercase tracking-wide text-slate-400">{formatDate(post.publishedAt)}</p>
 
       {post.coverImageUrl && (
-        <div className="relative mt-8 aspect-video overflow-hidden rounded-xl bg-slate-100">
+        <div className="relative mt-8 aspect-video overflow-hidden border-4 border-slate-900 bg-slate-100 shadow-hard">
           <Image src={post.coverImageUrl} alt={post.title} fill className="object-cover" />
         </div>
       )}
 
       <div
-        className="prose prose-slate mt-8 max-w-none"
+        className="prose prose-slate mt-8 max-w-none prose-headings:font-display prose-headings:font-black prose-headings:uppercase prose-a:font-bold prose-a:text-primary"
         dangerouslySetInnerHTML={{ __html: sanitizeRichText(post.content) }}
       />
     </article>
