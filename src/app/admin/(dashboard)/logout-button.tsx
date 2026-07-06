@@ -12,7 +12,7 @@ export function LogoutButton() {
   }
 
   return (
-    <button onClick={handleLogout} className="text-slate-500 hover:text-slate-900">
+    <button onClick={handleLogout} className="text-slate-500 hover:text-primary">
       Sair
     </button>
   );
