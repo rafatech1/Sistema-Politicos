@@ -24,7 +24,7 @@ export default async function SobrePage() {
     <div className="mx-auto max-w-3xl px-6 py-16">
       <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left">
         {settings.profilePhotoUrl && (
-          <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-full border-4 border-slate-900 bg-slate-100">
+          <div className="relative aspect-square w-32 shrink-0 overflow-hidden border-4 border-slate-900 bg-slate-100 shadow-hard">
             <Image src={settings.profilePhotoUrl} alt={settings.candidateName} fill className="object-cover" />
           </div>
         )}
