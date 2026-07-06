@@ -1,5 +1,6 @@
 import type { FormFieldConfig } from '@/components/admin/resource-form';
 import type { ResourceColumn } from '@/components/admin/resource-table';
+import { Badge, type BadgeTone } from '@/components/admin/badge';
 
 export interface PostRow {
   id: string;
@@ -10,10 +11,10 @@ export interface PostRow {
   category?: { name: string } | null;
 }
 
-const STATUS_OPTIONS = [
-  { value: 'DRAFT', label: 'Rascunho' },
-  { value: 'PUBLISHED', label: 'Publicado' },
-  { value: 'ARCHIVED', label: 'Arquivado' },
+const STATUS_OPTIONS: { value: string; label: string; tone: BadgeTone }[] = [
+  { value: 'DRAFT', label: 'Rascunho', tone: 'gray' },
+  { value: 'PUBLISHED', label: 'Publicado', tone: 'green' },
+  { value: 'ARCHIVED', label: 'Arquivado', tone: 'amber' },
 ];
 
 export function buildFields(categories: { id: string; name: string }[]): FormFieldConfig[] {
@@ -32,6 +33,17 @@ export function buildFields(categories: { id: string; name: string }[]): FormFie
 export const COLUMNS: ResourceColumn<PostRow>[] = [
   { key: 'title', label: 'Título' },
   { key: 'category', label: 'Categoria', render: (item) => item.category?.name ?? '—' },
-  { key: 'status', label: 'Status', render: (item) => STATUS_OPTIONS.find((s) => s.value === item.status)?.label ?? item.status },
-  { key: 'isFeatured', label: 'Destaque', render: (item) => (item.isFeatured ? 'Sim' : 'Não') },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (item) => {
+      const opt = STATUS_OPTIONS.find((s) => s.value === item.status);
+      return <Badge tone={opt?.tone ?? 'gray'}>{opt?.label ?? item.status}</Badge>;
+    },
+  },
+  {
+    key: 'isFeatured',
+    label: 'Destaque',
+    render: (item) => <Badge tone={item.isFeatured ? 'blue' : 'gray'}>{item.isFeatured ? 'Sim' : 'Não'}</Badge>,
+  },
 ];

@@ -1,5 +1,6 @@
 import type { FormFieldConfig } from '@/components/admin/resource-form';
 import type { ResourceColumn } from '@/components/admin/resource-table';
+import { Badge, type BadgeTone } from '@/components/admin/badge';
 
 export interface EmendaRow {
   id: string;
@@ -10,11 +11,11 @@ export interface EmendaRow {
   year: number | null;
 }
 
-const STATUS_OPTIONS = [
-  { value: 'EMPENHADA', label: 'Empenhada' },
-  { value: 'EM_EXECUCAO', label: 'Em execução' },
-  { value: 'PAGA', label: 'Paga' },
-  { value: 'CANCELADA', label: 'Cancelada' },
+const STATUS_OPTIONS: { value: string; label: string; tone: BadgeTone }[] = [
+  { value: 'EMPENHADA', label: 'Empenhada', tone: 'blue' },
+  { value: 'EM_EXECUCAO', label: 'Em execução', tone: 'amber' },
+  { value: 'PAGA', label: 'Paga', tone: 'green' },
+  { value: 'CANCELADA', label: 'Cancelada', tone: 'red' },
 ];
 
 export const FIELDS: FormFieldConfig[] = [
@@ -36,5 +37,12 @@ export const COLUMNS: ResourceColumn<EmendaRow>[] = [
   { key: 'area', label: 'Área' },
   { key: 'municipio', label: 'Município' },
   { key: 'year', label: 'Ano' },
-  { key: 'status', label: 'Status', render: (item) => STATUS_OPTIONS.find((s) => s.value === item.status)?.label ?? item.status },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (item) => {
+      const opt = STATUS_OPTIONS.find((s) => s.value === item.status);
+      return <Badge tone={opt?.tone ?? 'gray'}>{opt?.label ?? item.status}</Badge>;
+    },
+  },
 ];

@@ -1,5 +1,6 @@
 import type { FormFieldConfig } from '@/components/admin/resource-form';
 import type { ResourceColumn } from '@/components/admin/resource-table';
+import { Badge, type BadgeTone } from '@/components/admin/badge';
 
 export interface ProjetoDeLeiRow {
   id: string;
@@ -10,18 +11,18 @@ export interface ProjetoDeLeiRow {
   isFeatured: boolean;
 }
 
-const TRAMITACAO_OPTIONS = [
-  { value: 'APRESENTADO', label: 'Apresentado' },
-  { value: 'EM_TRAMITACAO', label: 'Em tramitação' },
-  { value: 'APROVADO', label: 'Aprovado' },
-  { value: 'REJEITADO', label: 'Rejeitado' },
-  { value: 'ARQUIVADO', label: 'Arquivado' },
+const TRAMITACAO_OPTIONS: { value: string; label: string; tone: BadgeTone }[] = [
+  { value: 'APRESENTADO', label: 'Apresentado', tone: 'gray' },
+  { value: 'EM_TRAMITACAO', label: 'Em tramitação', tone: 'blue' },
+  { value: 'APROVADO', label: 'Aprovado', tone: 'green' },
+  { value: 'REJEITADO', label: 'Rejeitado', tone: 'red' },
+  { value: 'ARQUIVADO', label: 'Arquivado', tone: 'amber' },
 ];
 
-const PUBLISH_OPTIONS = [
-  { value: 'DRAFT', label: 'Rascunho' },
-  { value: 'PUBLISHED', label: 'Publicado' },
-  { value: 'ARCHIVED', label: 'Arquivado' },
+const PUBLISH_OPTIONS: { value: string; label: string; tone: BadgeTone }[] = [
+  { value: 'DRAFT', label: 'Rascunho', tone: 'gray' },
+  { value: 'PUBLISHED', label: 'Publicado', tone: 'green' },
+  { value: 'ARCHIVED', label: 'Arquivado', tone: 'amber' },
 ];
 
 export const FIELDS: FormFieldConfig[] = [
@@ -47,11 +48,25 @@ export const FIELDS: FormFieldConfig[] = [
 export const COLUMNS: ResourceColumn<ProjetoDeLeiRow>[] = [
   { key: 'number', label: 'Número' },
   { key: 'title', label: 'Título' },
-  { key: 'status', label: 'Tramitação', render: (item) => TRAMITACAO_OPTIONS.find((s) => s.value === item.status)?.label ?? item.status },
+  {
+    key: 'status',
+    label: 'Tramitação',
+    render: (item) => {
+      const opt = TRAMITACAO_OPTIONS.find((s) => s.value === item.status);
+      return <Badge tone={opt?.tone ?? 'gray'}>{opt?.label ?? item.status}</Badge>;
+    },
+  },
   {
     key: 'publishStatus',
     label: 'Publicação',
-    render: (item) => PUBLISH_OPTIONS.find((s) => s.value === item.publishStatus)?.label ?? item.publishStatus,
+    render: (item) => {
+      const opt = PUBLISH_OPTIONS.find((s) => s.value === item.publishStatus);
+      return <Badge tone={opt?.tone ?? 'gray'}>{opt?.label ?? item.publishStatus}</Badge>;
+    },
   },
-  { key: 'isFeatured', label: 'Destaque', render: (item) => (item.isFeatured ? 'Sim' : 'Não') },
+  {
+    key: 'isFeatured',
+    label: 'Destaque',
+    render: (item) => <Badge tone={item.isFeatured ? 'blue' : 'gray'}>{item.isFeatured ? 'Sim' : 'Não'}</Badge>,
+  },
 ];
