@@ -36,6 +36,16 @@ CMD ["npm", "run", "dev"]
 FROM base AS builder
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# `next build` chama "collect page data" em toda rota para decidir se é
+# estática ou dinâmica — isso executa o import-time do app, incluindo
+# src/lib/env.ts (valida DATABASE_URL/JWT_*_SECRET via Zod e lança erro se
+# faltar). Nenhuma rota faz query real nesta fase, só placeholders com o
+# formato/tamanho exigido bastam. Os valores reais de produção vêm do
+# ambiente do container em runtime (env_file/secrets do orquestrador),
+# nunca destes ARGs — eles não são copiados para o estágio `runner`.
+ARG DATABASE_URL=postgresql://build:build@localhost:5432/build
+ARG JWT_ACCESS_SECRET=build-time-placeholder-not-a-real-secret-0000
+ARG JWT_REFRESH_SECRET=build-time-placeholder-not-a-real-secret-1111
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npx prisma generate
