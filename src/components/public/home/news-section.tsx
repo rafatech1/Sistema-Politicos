@@ -8,6 +8,7 @@ export async function NewsSection() {
     where: { status: 'PUBLISHED' },
     orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
     take: 3,
+    include: { category: true },
   });
   if (posts.length === 0) return null;
 
@@ -22,18 +23,28 @@ export async function NewsSection() {
               href={`/noticias/${post.slug}`}
               className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
             >
-              {post.coverImageUrl && (
-                <div className="relative aspect-video overflow-hidden bg-slate-100">
+              <div className="relative aspect-video overflow-hidden bg-slate-100">
+                {post.coverImageUrl && (
                   <Image
                     src={post.coverImageUrl}
                     alt={post.title}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                </div>
-              )}
+                )}
+                {post.category && (
+                  <span className="absolute left-3 top-3 rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-white">
+                    {post.category.name}
+                  </span>
+                )}
+              </div>
               <div className="p-5">
-                <h3 className="font-semibold text-slate-900 transition-colors group-hover:text-primary">
+                {post.publishedAt && (
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                    {post.publishedAt.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                  </p>
+                )}
+                <h3 className="mt-1.5 font-display font-semibold text-slate-900 transition-colors group-hover:text-primary">
                   {post.title}
                 </h3>
                 {post.excerpt && <p className="mt-2 line-clamp-2 text-sm text-slate-600">{post.excerpt}</p>}

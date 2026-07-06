@@ -10,8 +10,11 @@ export async function AboutSection() {
     <section className="bg-white px-6 py-20 sm:py-28">
       <div className="mx-auto grid max-w-6xl gap-12 sm:grid-cols-[340px_1fr] sm:items-center">
         {settings.profilePhotoUrl && (
-          <div className="relative mx-auto aspect-square w-64 overflow-hidden rounded-2xl bg-slate-100 shadow-card sm:w-full">
-            <Image src={settings.profilePhotoUrl} alt={settings.candidateName} fill className="object-cover" />
+          <div className="relative mx-auto w-64 sm:w-full">
+            <div aria-hidden className="absolute -inset-3 rounded-2xl border-2 border-primary/20" />
+            <div className="relative aspect-square overflow-hidden rounded-2xl bg-slate-100 shadow-card">
+              <Image src={settings.profilePhotoUrl} alt={settings.candidateName} fill className="object-cover" />
+            </div>
           </div>
         )}
         <div>

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { SocialIcons, type SocialLinksData } from '@/components/public/social-icons';
+import { SectionHeading } from './section-heading';
 
 export function ContactSection({ socialData }: { socialData: SocialLinksData }) {
   const [form, setForm] = useState({
@@ -53,11 +54,8 @@ export function ContactSection({ socialData }: { socialData: SocialLinksData }) 
     <section id="contato" className="bg-slate-50 px-6 py-20 sm:py-28">
       <div className="mx-auto grid max-w-6xl gap-12 sm:grid-cols-2 sm:items-start">
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">Fale comigo</p>
-          <h2 className="font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Contato
-          </h2>
-          <p className="mt-3 leading-relaxed text-slate-600">
+          <SectionHeading eyebrow="Fale comigo" title="Contato" />
+          <p className="leading-relaxed text-slate-600">
             Fale diretamente pelo formulário ou pelas redes sociais.
           </p>
           <SocialIcons

@@ -32,11 +32,16 @@ export function ElectionCountdown({ electionDateIso }: { electionDateIso: string
   ];
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-3">
       {units.map(([label, value]) => (
-        <div key={label} className="flex flex-col items-center rounded-lg bg-white/10 px-4 py-3 backdrop-blur">
-          <span className="text-2xl font-bold tabular-nums text-white">{String(value).padStart(2, '0')}</span>
-          <span className="text-xs uppercase tracking-wide text-white/70">{label}</span>
+        <div
+          key={label}
+          className="flex min-w-[3.25rem] flex-col items-center rounded-lg border border-white/15 bg-white/10 px-3 py-2 backdrop-blur"
+        >
+          <span className="font-display text-xl font-semibold tabular-nums text-white">
+            {String(value).padStart(2, '0')}
+          </span>
+          <span className="text-[10px] uppercase tracking-wide text-white/70">{label}</span>
         </div>
       ))}
     </div>

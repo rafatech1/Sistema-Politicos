@@ -23,11 +23,16 @@ export async function HighlightsSection() {
               <Link
                 key={pl.id}
                 href={`/projetos-de-lei/${pl.slug}`}
-                className="block rounded-2xl border border-slate-200 bg-white p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
+                className="group flex overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
               >
-                <span className="text-xs font-semibold uppercase tracking-wide text-primary">PL {pl.number}</span>
-                <h3 className="mt-2 font-semibold text-slate-900">{pl.title}</h3>
-                {pl.summary && <p className="mt-2 line-clamp-3 text-sm text-slate-600">{pl.summary}</p>}
+                <span aria-hidden className="w-1.5 shrink-0 bg-primary transition-colors group-hover:bg-accent" />
+                <div className="p-6">
+                  <span className="font-mono text-xs font-semibold uppercase tracking-wide tabular-nums text-primary">
+                    PL {pl.number}
+                  </span>
+                  <h3 className="mt-2 font-display font-semibold text-slate-900">{pl.title}</h3>
+                  {pl.summary && <p className="mt-2 line-clamp-3 text-sm text-slate-600">{pl.summary}</p>}
+                </div>
               </Link>
             ))}
           </div>
@@ -53,15 +58,18 @@ export async function HighlightsSection() {
             <Link
               key={proposta.id}
               href={`/propostas/${proposta.slug}`}
-              className="block rounded-2xl border border-slate-200 bg-white p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
+              className="group flex overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
             >
-              {proposta.eixoTematico && (
-                <span className="text-xs font-semibold uppercase tracking-wide text-primary">
-                  {proposta.eixoTematico.name}
-                </span>
-              )}
-              <h3 className="mt-2 font-semibold text-slate-900">{proposta.title}</h3>
-              {proposta.summary && <p className="mt-2 line-clamp-3 text-sm text-slate-600">{proposta.summary}</p>}
+              <span aria-hidden className="w-1.5 shrink-0 bg-primary transition-colors group-hover:bg-accent" />
+              <div className="p-6">
+                {proposta.eixoTematico && (
+                  <span className="text-xs font-semibold uppercase tracking-wide text-primary">
+                    {proposta.eixoTematico.name}
+                  </span>
+                )}
+                <h3 className="mt-2 font-display font-semibold text-slate-900">{proposta.title}</h3>
+                {proposta.summary && <p className="mt-2 line-clamp-3 text-sm text-slate-600">{proposta.summary}</p>}
+              </div>
             </Link>
           ))}
         </div>

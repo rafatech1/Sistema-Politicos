@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { FaInstagram } from 'react-icons/fa6';
 import { prisma } from '@/lib/prisma';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { SectionHeading } from './section-heading';
@@ -36,6 +37,12 @@ export async function InstagramSection() {
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
+                <span
+                  aria-hidden
+                  className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-primary shadow-card"
+                >
+                  <FaInstagram size={15} />
+                </span>
               </div>
               {post.caption && <p className="line-clamp-2 p-3 text-sm text-slate-600">{post.caption}</p>}
             </a>
