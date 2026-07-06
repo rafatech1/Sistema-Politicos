@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { FaBoxOpen, FaSpinner, FaTrashCan } from 'react-icons/fa6';
 
 interface LeadRow {
   id: string;
@@ -70,7 +71,7 @@ export function LeadsManager() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm"
+            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           >
             <option value="ALL">Todos os tipos</option>
             <option value="VOLUNTEER">Voluntário</option>
@@ -79,7 +80,7 @@ export function LeadsManager() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm"
+            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           >
             <option value="ALL">Todos os status</option>
             {STATUS_OPTIONS.map((s) => (
@@ -91,7 +92,7 @@ export function LeadsManager() {
         </div>
         <a
           href="/api/admin/leads/export"
-          className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:opacity-90"
         >
           Exportar CSV
         </a>
@@ -99,36 +100,36 @@ export function LeadsManager() {
 
       <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-slate-500">
+          <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="px-4 py-2">Data</th>
-              <th className="px-4 py-2">Tipo</th>
-              <th className="px-4 py-2">Nome</th>
-              <th className="px-4 py-2">Contato</th>
-              <th className="px-4 py-2">Mensagem</th>
-              <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2" />
+              <th className="px-4 py-3">Data</th>
+              <th className="px-4 py-3">Tipo</th>
+              <th className="px-4 py-3">Nome</th>
+              <th className="px-4 py-3">Contato</th>
+              <th className="px-4 py-3">Mensagem</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3" />
             </tr>
           </thead>
           <tbody>
             {leads?.map((lead) => (
-              <tr key={lead.id} className="border-t border-slate-100 align-top">
-                <td className="whitespace-nowrap px-4 py-2 text-xs text-slate-500">
+              <tr key={lead.id} className="border-t border-slate-100 align-top transition-colors hover:bg-slate-50">
+                <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-500">
                   {new Date(lead.createdAt).toLocaleString('pt-BR')}
                 </td>
-                <td className="px-4 py-2">{TYPE_LABELS[lead.type] ?? lead.type}</td>
-                <td className="px-4 py-2">{lead.name}</td>
-                <td className="px-4 py-2 text-xs text-slate-600">
+                <td className="px-4 py-3">{TYPE_LABELS[lead.type] ?? lead.type}</td>
+                <td className="px-4 py-3">{lead.name}</td>
+                <td className="px-4 py-3 text-xs text-slate-600">
                   {lead.email}
                   {lead.email && lead.phone && <br />}
                   {lead.phone}
                 </td>
-                <td className="max-w-xs px-4 py-2 text-xs text-slate-600">{lead.message}</td>
-                <td className="px-4 py-2">
+                <td className="max-w-xs px-4 py-3 text-xs text-slate-600">{lead.message}</td>
+                <td className="px-4 py-3">
                   <select
                     value={lead.status}
                     onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                    className="rounded-md border border-slate-300 px-2 py-1 text-xs"
+                    className="rounded-md border border-slate-300 px-2 py-1 text-xs focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                   >
                     {STATUS_OPTIONS.map((s) => (
                       <option key={s.value} value={s.value}>
@@ -137,8 +138,12 @@ export function LeadsManager() {
                     ))}
                   </select>
                 </td>
-                <td className="px-4 py-2 text-right">
-                  <button onClick={() => handleDelete(lead.id)} className="text-red-500 hover:text-red-700">
+                <td className="px-4 py-3 text-right">
+                  <button
+                    onClick={() => handleDelete(lead.id)}
+                    className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+                  >
+                    <FaTrashCan size={11} />
                     Remover
                   </button>
                 </td>
@@ -146,8 +151,18 @@ export function LeadsManager() {
             ))}
           </tbody>
         </table>
-        {leads && leads.length === 0 && <p className="p-6 text-center text-sm text-slate-500">Nenhum lead encontrado.</p>}
-        {!leads && <p className="p-6 text-center text-sm text-slate-500">Carregando…</p>}
+        {leads && leads.length === 0 && (
+          <div className="flex flex-col items-center gap-2 p-12 text-center text-sm text-slate-400">
+            <FaBoxOpen size={28} />
+            <p>Nenhum lead encontrado.</p>
+          </div>
+        )}
+        {!leads && (
+          <div className="flex items-center justify-center gap-2 p-12 text-sm text-slate-400">
+            <FaSpinner size={16} className="animate-spin" />
+            Carregando…
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import { FaTrashCan } from 'react-icons/fa6';
+import { Badge } from '@/components/admin/badge';
 
 interface UserRow {
   id: string;
@@ -74,36 +76,41 @@ export function UsersManager({
     <div className="space-y-8">
       <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-slate-500">
+          <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="px-4 py-2">Nome</th>
-              <th className="px-4 py-2">E-mail</th>
-              <th className="px-4 py-2">Papel</th>
-              <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2" />
+              <th className="px-4 py-3">Nome</th>
+              <th className="px-4 py-3">E-mail</th>
+              <th className="px-4 py-3">Papel</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3" />
             </tr>
           </thead>
           <tbody>
             {users.map((u) => (
-              <tr key={u.id} className="border-t border-slate-100">
-                <td className="px-4 py-2">{u.name}</td>
-                <td className="px-4 py-2">{u.email}</td>
-                <td className="px-4 py-2">{u.role}</td>
-                <td className="px-4 py-2">{u.isActive ? 'Ativo' : 'Inativo'}</td>
-                <td className="space-x-3 px-4 py-2 text-right">
-                  <button
-                    onClick={() => handleToggleActive(u)}
-                    className="text-slate-500 hover:text-slate-900"
-                  >
-                    {u.isActive ? 'Desativar' : 'Ativar'}
-                  </button>
-                  <button
-                    onClick={() => handleDelete(u)}
-                    disabled={u.id === currentUserId}
-                    className="text-red-500 hover:text-red-700 disabled:opacity-30"
-                  >
-                    Remover
-                  </button>
+              <tr key={u.id} className="border-t border-slate-100 transition-colors hover:bg-slate-50">
+                <td className="px-4 py-3">{u.name}</td>
+                <td className="px-4 py-3">{u.email}</td>
+                <td className="px-4 py-3">{u.role === 'ADMIN' ? 'Administrador' : 'Editor'}</td>
+                <td className="px-4 py-3">
+                  <Badge tone={u.isActive ? 'green' : 'gray'}>{u.isActive ? 'Ativo' : 'Inativo'}</Badge>
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center justify-end gap-2">
+                    <button
+                      onClick={() => handleToggleActive(u)}
+                      className="rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-primary hover:text-primary"
+                    >
+                      {u.isActive ? 'Desativar' : 'Ativar'}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(u)}
+                      disabled={u.id === currentUserId}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:pointer-events-none disabled:opacity-30"
+                    >
+                      <FaTrashCan size={11} />
+                      Remover
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -122,7 +129,7 @@ export function UsersManager({
           placeholder="Nome"
           value={form.name}
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
         <input
           required
@@ -130,7 +137,7 @@ export function UsersManager({
           placeholder="E-mail"
           value={form.email}
           onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
         <input
           required
@@ -138,12 +145,12 @@ export function UsersManager({
           placeholder="Senha provisória"
           value={form.password}
           onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
         <select
           value={form.role}
           onChange={(e) => setForm((f) => ({ ...f, role: e.target.value as 'ADMIN' | 'EDITOR' }))}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         >
           <option value="EDITOR">Editor</option>
           <option value="ADMIN">Admin</option>
@@ -154,7 +161,7 @@ export function UsersManager({
         <button
           type="submit"
           disabled={creating}
-          className="col-span-full w-fit rounded-md bg-slate-900 px-6 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+          className="col-span-full w-fit rounded-md bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 disabled:opacity-50"
         >
           {creating ? 'Criando…' : 'Criar usuário'}
         </button>

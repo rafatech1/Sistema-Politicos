@@ -121,7 +121,7 @@ export function ResourceForm({
               required={field.required}
               value={String(data[field.name] ?? '')}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 font-mono text-sm focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 font-mono text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           ) : field.type === 'select' ? (
             <select
@@ -130,7 +130,7 @@ export function ResourceForm({
               required={field.required}
               value={String(data[field.name] ?? '')}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             >
               <option value="">—</option>
               {field.options?.map((opt) => (
@@ -147,7 +147,7 @@ export function ResourceForm({
               required={field.required}
               value={String(data[field.name] ?? '')}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           )}
           {field.helpText && <p className="text-xs text-slate-400">{field.helpText}</p>}
@@ -159,7 +159,7 @@ export function ResourceForm({
       <button
         type="submit"
         disabled={saving}
-        className="rounded-md bg-slate-900 px-6 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+        className="rounded-md bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 disabled:opacity-50"
       >
         {saving ? 'Salvando…' : 'Salvar'}
       </button>

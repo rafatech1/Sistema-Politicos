@@ -41,7 +41,7 @@ function ToolbarButton({
       aria-label={label}
       title={label}
       className={`rounded px-2 py-1 text-sm font-medium ${
-        active ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-200'
+        active ? 'bg-primary text-white' : 'text-slate-600 hover:bg-slate-200'
       } disabled:opacity-40`}
     >
       {children}
@@ -159,7 +159,7 @@ export function RichTextEditor({
   }
 
   return (
-    <div className="rounded-md border border-slate-300 focus-within:border-slate-500">
+    <div className="rounded-md border border-slate-300 focus-within:border-primary">
       {!disabled && <Toolbar editor={editor} />}
       <EditorContent editor={editor} />
     </div>

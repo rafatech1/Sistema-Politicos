@@ -73,7 +73,7 @@ export function ImageUploadField({
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
         placeholder="ou cole a URL de uma imagem já hospedada"
-        className="w-full rounded-md border border-slate-300 px-3 py-2 text-xs text-slate-500 focus:border-slate-500 focus:outline-none disabled:bg-slate-100"
+        className="w-full rounded-md border border-slate-300 px-3 py-2 text-xs text-slate-500 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-slate-100"
       />
 
       {error && <p className="text-sm text-red-600">{error}</p>}

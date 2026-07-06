@@ -74,7 +74,7 @@ function Field({
     onChange,
     disabled,
     className:
-      'w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none disabled:bg-slate-100',
+      'w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-slate-100',
   };
 
   return (
@@ -204,7 +204,7 @@ export function SettingsForm({
               value={data.mode}
               onChange={handleChange}
               disabled={!canEdit}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-slate-100"
             >
               <option value="CAMPAIGN">Campanha</option>
               <option value="MANDATE">Mandato</option>
@@ -343,7 +343,7 @@ export function SettingsForm({
         <button
           type="submit"
           disabled={saving}
-          className="rounded-md bg-slate-900 px-6 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+          className="rounded-md bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 disabled:opacity-50"
         >
           {saving ? 'Salvando…' : 'Salvar configurações'}
         </button>
