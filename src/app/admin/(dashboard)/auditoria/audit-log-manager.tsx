@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useState } from 'react';
+import { FaBoxOpen, FaSpinner } from 'react-icons/fa6';
 
 interface AuditLogRow {
   id: string;
@@ -73,7 +74,7 @@ export function AuditLogManager() {
         <select
           value={entityTypeFilter}
           onChange={(e) => setEntityTypeFilter(e.target.value)}
-          className="rounded-md border border-slate-300 px-3 py-1.5 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         >
           <option value="ALL">Todas as entidades</option>
           {ENTITY_TYPE_OPTIONS.map((type) => (
@@ -85,7 +86,7 @@ export function AuditLogManager() {
         <select
           value={actionFilter}
           onChange={(e) => setActionFilter(e.target.value)}
-          className="rounded-md border border-slate-300 px-3 py-1.5 text-sm"
+          className="rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         >
           <option value="ALL">Todas as ações</option>
           {ACTION_OPTIONS.map((a) => (
@@ -98,31 +99,31 @@ export function AuditLogManager() {
 
       <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-slate-500">
+          <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="px-4 py-2">Data</th>
-              <th className="px-4 py-2">Usuário</th>
-              <th className="px-4 py-2">Ação</th>
-              <th className="px-4 py-2">Entidade</th>
-              <th className="px-4 py-2">IP</th>
+              <th className="px-4 py-3">Data</th>
+              <th className="px-4 py-3">Usuário</th>
+              <th className="px-4 py-3">Ação</th>
+              <th className="px-4 py-3">Entidade</th>
+              <th className="px-4 py-3">IP</th>
             </tr>
           </thead>
           <tbody>
             {logs?.map((log) => (
               <Fragment key={log.id}>
                 <tr
-                  className="cursor-pointer border-t border-slate-100 hover:bg-slate-50"
+                  className="cursor-pointer border-t border-slate-100 transition-colors hover:bg-slate-50"
                   onClick={() => setExpandedId((prev) => (prev === log.id ? null : log.id))}
                 >
-                  <td className="whitespace-nowrap px-4 py-2 text-xs text-slate-500">
+                  <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-500">
                     {new Date(log.createdAt).toLocaleString('pt-BR')}
                   </td>
-                  <td className="px-4 py-2">{log.userEmailSnapshot ?? '—'}</td>
-                  <td className="px-4 py-2">{ACTION_OPTIONS.find((a) => a.value === log.action)?.label ?? log.action}</td>
-                  <td className="px-4 py-2 text-xs text-slate-600">
+                  <td className="px-4 py-3">{log.userEmailSnapshot ?? '—'}</td>
+                  <td className="px-4 py-3">{ACTION_OPTIONS.find((a) => a.value === log.action)?.label ?? log.action}</td>
+                  <td className="px-4 py-3 text-xs text-slate-600">
                     {log.entityType} <span className="text-slate-400">#{log.entityId}</span>
                   </td>
-                  <td className="px-4 py-2 text-xs text-slate-500">{log.ipAddress ?? '—'}</td>
+                  <td className="px-4 py-3 text-xs text-slate-500">{log.ipAddress ?? '—'}</td>
                 </tr>
                 {expandedId === log.id && (log.beforeJson != null || log.afterJson != null) && (
                   <tr className="border-t border-slate-100 bg-slate-50">
@@ -148,8 +149,18 @@ export function AuditLogManager() {
             ))}
           </tbody>
         </table>
-        {logs && logs.length === 0 && <p className="p-6 text-center text-sm text-slate-500">Nenhum registro encontrado.</p>}
-        {!logs && <p className="p-6 text-center text-sm text-slate-500">Carregando…</p>}
+        {logs && logs.length === 0 && (
+          <div className="flex flex-col items-center gap-2 p-12 text-center text-sm text-slate-400">
+            <FaBoxOpen size={28} />
+            <p>Nenhum registro encontrado.</p>
+          </div>
+        )}
+        {!logs && (
+          <div className="flex items-center justify-center gap-2 p-12 text-sm text-slate-400">
+            <FaSpinner size={16} className="animate-spin" />
+            Carregando…
+          </div>
+        )}
       </div>
     </div>
   );
