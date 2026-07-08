@@ -10,10 +10,23 @@ const config: Config = {
         primary: 'var(--color-primary)',
         secondary: 'var(--color-secondary)',
         accent: 'var(--color-accent)',
+        // Paleta fixa das seções "editorial" (Próximos eventos / No que
+        // acredito) — independente das cores dinâmicas de site_settings,
+        // igual ao resto do santinho usa primary/secondary/accent.
+        editorial: {
+          bg: '#EDE9E0',
+          card: '#FAF8F3',
+          ink: '#242820',
+          muted: '#8C8677',
+          accent: '#2F4B3C',
+          'accent-soft': '#5F8671',
+        },
       },
       fontFamily: {
         sans: ['var(--font-sans)', ...defaultTheme.fontFamily.sans],
         display: ['var(--font-display)', ...defaultTheme.fontFamily.sans],
+        serif: ['var(--font-editorial-serif)', ...defaultTheme.fontFamily.serif],
+        mono: ['var(--font-editorial-mono)', ...defaultTheme.fontFamily.mono],
       },
       boxShadow: {
         card: '0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -8px rgb(0 0 0 / 0.12)',

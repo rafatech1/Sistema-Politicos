@@ -7,6 +7,7 @@ export function SectionHeading({
   ctaHref,
   ctaExternal,
   as = 'h2',
+  variant = 'default',
 }: {
   eyebrow?: string;
   title: string;
@@ -15,10 +16,55 @@ export function SectionHeading({
   ctaExternal?: boolean;
   /** 'h1' para título de página isolada (ex: /noticias); 'h2' (padrão) para seções dentro da home. */
   as?: 'h1' | 'h2';
+  /** 'editorial' — usado só em Próximos eventos / No que acredito (fundo cru, serifa, verde). */
+  variant?: 'default' | 'editorial';
 }) {
+  const Heading = as;
+
+  if (variant === 'editorial') {
+    return (
+      <div className="mb-10 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          {eyebrow && (
+            <p className="mb-2 font-mono text-xs font-medium uppercase tracking-widest text-editorial-accent">
+              — {eyebrow}
+            </p>
+          )}
+          <Heading className="font-serif text-3xl font-medium leading-tight text-editorial-ink sm:text-4xl">
+            {title}
+          </Heading>
+        </div>
+        {ctaLabel &&
+          ctaHref &&
+          (ctaExternal ? (
+            <a
+              href={ctaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/cta inline-flex shrink-0 items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-editorial-muted transition-colors hover:text-editorial-accent"
+            >
+              {ctaLabel}
+              <span aria-hidden className="transition-transform group-hover/cta:translate-x-1">
+                →
+              </span>
+            </a>
+          ) : (
+            <Link
+              href={ctaHref}
+              className="group/cta inline-flex shrink-0 items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-editorial-muted transition-colors hover:text-editorial-accent"
+            >
+              {ctaLabel}
+              <span aria-hidden className="transition-transform group-hover/cta:translate-x-1">
+                →
+              </span>
+            </Link>
+          ))}
+      </div>
+    );
+  }
+
   const ctaClassName =
     'group/cta inline-flex shrink-0 items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-slate-900 transition-colors hover:text-primary';
-  const Heading = as;
 
   return (
     <div className="mb-10 flex items-end justify-between gap-4">

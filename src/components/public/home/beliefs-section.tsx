@@ -9,28 +9,30 @@ export async function BeliefsSection() {
   if (beliefs.length === 0) return null;
 
   return (
-    <section className="bg-slate-50 px-6 py-20 sm:py-28">
+    <section className="bg-editorial-bg px-6 py-20 sm:py-28">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading eyebrow="Valores" title="No que acredito" />
+        <SectionHeading eyebrow="Valores" title="No que acredito" variant="editorial" />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {beliefs.map((belief) => (
             <div
               key={belief.id}
-              className="border-2 border-slate-900 bg-white p-6 shadow-hard-sm transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard sm:p-8"
+              className="rounded-2xl bg-editorial-card p-6 shadow-[0_8px_24px_-10px_rgba(36,40,32,0.18)] transition-shadow hover:shadow-[0_12px_28px_-10px_rgba(36,40,32,0.26)] sm:p-7"
             >
               {belief.icon && (
                 <span
                   aria-hidden
-                  className="flex h-11 w-11 items-center justify-center border-2 border-slate-900 bg-accent text-xl"
+                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-editorial-bg text-xl shadow-sm"
                 >
                   {belief.icon}
                 </span>
               )}
-              <h3 className={`font-display text-xl font-black uppercase leading-tight text-slate-900 ${belief.icon ? 'mt-4' : ''}`}>
+              <h3 className={`font-serif text-xl font-medium leading-tight text-editorial-ink ${belief.icon ? 'mt-4' : ''}`}>
                 {belief.title}
               </h3>
-              <p className="mt-2 text-slate-600">{belief.tagline}</p>
-              {belief.description && <p className="mt-3 text-sm leading-relaxed text-slate-500">{belief.description}</p>}
+              <p className="mt-2 text-sm text-editorial-ink/70">{belief.tagline}</p>
+              {belief.description && (
+                <p className="mt-3 text-sm leading-relaxed text-editorial-muted">{belief.description}</p>
+              )}
             </div>
           ))}
         </div>
