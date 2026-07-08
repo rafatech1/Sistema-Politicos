@@ -54,49 +54,77 @@ export async function HeroSection() {
 
   return (
     <section className="bg-white">
-      {/* Foto com eco/glow + headline — fundo escuro, único trecho "atmosfera" da home */}
       <div className="relative flex min-h-[85vh] items-center overflow-hidden bg-slate-950 py-20 sm:py-28">
+        {/* textura halftone — remete a impressão de cartaz/lambe de campanha */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
+            backgroundSize: '14px 14px',
+          }}
+        />
         <div
           aria-hidden
           className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-primary opacity-20 blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -left-32 bottom-0 h-96 w-96 rounded-full bg-secondary opacity-20 blur-3xl"
+          className="pointer-events-none absolute -left-32 bottom-0 h-96 w-96 rounded-full bg-secondary opacity-15 blur-3xl"
         />
 
-        <div className="relative mx-auto grid max-w-6xl gap-12 px-6 sm:grid-cols-[1fr_360px] sm:items-center">
-          <div>
+        <div className="relative mx-auto grid w-full max-w-6xl gap-14 px-6 sm:grid-cols-[1.1fr_360px] sm:items-center">
+          {/* z-10 + margem negativa: a headline invade a área da foto, como
+              tipografia colada por cima de um cartaz */}
+          <div className="relative z-10">
             <p className="mb-5 inline-block -rotate-1 border-2 border-slate-900 bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-slate-900">
               {settings.position}
               {settings.partyAcronym ? ` · ${settings.partyAcronym}` : ''}
             </p>
 
-            <h1 className="max-w-2xl font-display text-4xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-7xl">
+            <h1 className="max-w-2xl font-display text-4xl font-black uppercase leading-[0.95] tracking-tight text-white sm:-mr-28 sm:text-7xl">
               {settings.slogan || settings.candidateName}
             </h1>
 
-            <a
-              href="#seguinte"
-              className="mt-8 inline-flex w-fit items-center gap-2 border-2 border-slate-900 bg-accent px-6 py-3 text-sm font-black uppercase tracking-wide text-slate-900 shadow-hard-sm transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard"
-            >
-              Conheça as propostas
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
+            {settings.slogan && (
+              <p className="mt-4 text-sm font-bold uppercase tracking-[0.25em] text-white/60">
+                {settings.candidateName}
+              </p>
+            )}
+
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <a
+                href="#seguinte"
+                className="inline-flex w-fit items-center gap-2 border-2 border-slate-900 bg-accent px-6 py-3 text-sm font-black uppercase tracking-wide text-slate-900 shadow-hard-sm transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard"
+              >
+                Conheça as propostas
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+              <a
+                href="#contato"
+                className="inline-flex w-fit items-center border-2 border-white/40 px-6 py-3 text-sm font-black uppercase tracking-wide text-white transition-colors hover:border-white hover:bg-white hover:text-slate-900"
+              >
+                Fale comigo
+              </a>
+            </div>
           </div>
 
           {settings.heroBackgroundImageUrl && (
-            <div className="relative mx-auto aspect-[4/5] w-64 shrink-0 sm:w-full">
-              {/* ecos desfocados — a mesma foto, deslocada e apagada atrás da nítida */}
-              <div className="absolute inset-0 translate-x-5 translate-y-3 scale-95 overflow-hidden opacity-25 blur-sm grayscale">
-                <Image src={settings.heroBackgroundImageUrl} alt="" fill className="object-cover" />
-              </div>
-              <div className="absolute inset-0 -translate-x-5 translate-y-6 scale-90 overflow-hidden opacity-15 blur-md grayscale">
-                <Image src={settings.heroBackgroundImageUrl} alt="" fill className="object-cover" />
-              </div>
-              <div className="absolute inset-0 overflow-hidden border-4 border-white/10 shadow-[0_0_70px_-12px_var(--color-primary)]">
+            <div className="relative mx-auto w-64 shrink-0 sm:w-full">
+              {/* bloco accent deslocado atrás da foto — versão mais leve e
+                  gráfica do que os 3 ecos desfocados (menos peso no LCP) */}
+              <div aria-hidden className="absolute -bottom-4 -right-4 h-full w-full bg-accent" />
+              <div
+                aria-hidden
+                className="absolute -left-6 -top-6 z-10 h-20 w-20"
+                style={{
+                  backgroundImage: 'radial-gradient(circle, var(--color-accent, #fde047) 2px, transparent 2px)',
+                  backgroundSize: '10px 10px',
+                }}
+              />
+              <div className="relative aspect-[4/5] overflow-hidden border-2 border-white/15 shadow-[0_0_70px_-12px_var(--color-primary)]">
                 <Image
                   src={settings.heroBackgroundImageUrl}
                   alt={settings.candidateName}
@@ -111,7 +139,7 @@ export async function HeroSection() {
       </div>
 
       {hasMomentumBand && (
-        <div className="border-t-2 border-slate-900 bg-slate-900 py-8 text-white">
+        <div className="border-t-4 border-accent bg-slate-900 py-8 text-white">
           <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 sm:flex-row sm:items-center sm:justify-between">
             {countdownActive && settings.electionDate && (
               <div className="shrink-0">

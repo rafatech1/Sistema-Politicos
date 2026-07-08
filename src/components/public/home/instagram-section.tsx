@@ -4,6 +4,11 @@ import { prisma } from '@/lib/prisma';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { SectionHeading } from '@/components/public/section-heading';
 
+/**
+ * Posts com leve rotação alternada, como fotos coladas — a mesma
+ * linguagem dos "carimbos" rotacionados do restante do site. No hover
+ * (e em telas pequenas) o card endireita.
+ */
 export async function InstagramSection() {
   const [highlights, settings] = await Promise.all([
     prisma.instagramHighlight.findMany({ orderBy: { order: 'asc' }, take: 3 }),
@@ -12,7 +17,7 @@ export async function InstagramSection() {
   if (highlights.length === 0) return null;
 
   return (
-    <section className="bg-slate-50 px-6 py-20 sm:py-28">
+    <section className="overflow-hidden bg-slate-50 px-6 py-20 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           eyebrow="Redes sociais"
@@ -21,14 +26,16 @@ export async function InstagramSection() {
           ctaHref={settings.instagramUrl}
           ctaExternal
         />
-        <div className="grid gap-6 sm:grid-cols-3">
-          {highlights.map((post) => (
+        <div className="grid gap-6 sm:grid-cols-3 sm:gap-8">
+          {highlights.map((post, index) => (
             <a
               key={post.id}
               href={post.postUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group block overflow-hidden border-2 border-slate-900 bg-white shadow-hard-sm transition-all hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard"
+              className={`group block overflow-hidden border-2 border-slate-900 bg-white shadow-hard-sm transition-all hover:-translate-y-1 hover:rotate-0 hover:shadow-hard motion-reduce:transform-none ${
+                index % 2 === 0 ? 'sm:-rotate-1' : 'sm:rotate-1'
+              }`}
             >
               <div className="relative aspect-square overflow-hidden border-b-2 border-slate-900 bg-slate-100">
                 <Image
