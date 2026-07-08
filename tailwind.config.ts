@@ -10,16 +10,6 @@ const config: Config = {
         primary: 'var(--color-primary)',
         secondary: 'var(--color-secondary)',
         accent: 'var(--color-accent)',
-        // Paleta fixa do "Mural de Campanha" — usada só nas 4 seções de
-        // conteúdo da home (valores, agenda, propostas, notícias).
-        // Independente das cores dinâmicas de site_settings de propósito.
-        mural: {
-          bg: '#EDE6D9',
-          paper: '#FAF6EE',
-          ink: '#16233F',
-          tape: '#F2C230',
-          pin: '#B23A2E',
-        },
       },
       fontFamily: {
         sans: ['var(--font-sans)', ...defaultTheme.fontFamily.sans],
