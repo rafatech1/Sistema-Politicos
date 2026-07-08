@@ -12,7 +12,7 @@ export async function BeliefsSection() {
     <section className="bg-slate-50 px-6 py-20 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <SectionHeading eyebrow="Valores" title="No que acredito" />
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {beliefs.map((belief) => (
             <div
               key={belief.id}
