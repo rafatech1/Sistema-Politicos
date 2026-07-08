@@ -49,8 +49,10 @@ function SidebarLink({ href, label, icon: Icon, onNavigate }: NavItem & { onNavi
     <Link
       href={href}
       onClick={onNavigate}
-      className={`flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition-colors ${
-        active ? 'bg-primary text-white' : 'text-slate-600 hover:bg-slate-100'
+      className={`flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm transition-all ${
+        active
+          ? 'bg-primary font-semibold text-white shadow-sm shadow-primary/30'
+          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
       }`}
     >
       <Icon size={15} className="shrink-0" />
@@ -138,7 +140,7 @@ export function AdminShell({
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-4">
+        <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-gradient-to-br from-primary/[0.07] to-transparent px-4 py-4">
           <div className="flex min-w-0 items-center gap-3">
             {logoUrl ? (
               <Image
@@ -209,7 +211,7 @@ export function AdminShell({
           <span className="truncate font-display text-sm font-semibold text-slate-900">{candidateName}</span>
         </div>
 
-        <main className="mx-auto w-full max-w-5xl flex-1 overflow-y-auto px-4 py-6 sm:px-6 sm:py-8">{children}</main>
+        <main className="w-full flex-1 overflow-y-auto px-4 py-6 sm:px-6 sm:py-8">{children}</main>
       </div>
     </div>
   );

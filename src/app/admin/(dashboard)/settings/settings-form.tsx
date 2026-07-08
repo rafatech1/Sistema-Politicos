@@ -204,9 +204,9 @@ export function SettingsForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="max-w-4xl space-y-8">
       <fieldset disabled={!canEdit} className="space-y-8">
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Modo do site</h2>
           <p className="text-xs text-slate-500">
             Campanha: propostas, agenda e voluntariado. Mandato: projetos de lei, emendas
@@ -231,7 +231,7 @@ export function SettingsForm({
           </div>
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Identidade</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Nome do candidato" name="candidateName" value={data.candidateName} onChange={handleChange} disabled={!canEdit} />
@@ -243,7 +243,7 @@ export function SettingsForm({
           </div>
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Cores e imagens</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex items-end gap-3">
@@ -289,20 +289,20 @@ export function SettingsForm({
           </div>
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Sobre / Biografia resumida</h2>
           <Field label="Tagline (ex: Cristão, conservador e defensor da família)" name="aboutTagline" value={data.aboutTagline ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="Resumo curto (exibido na Home)" name="aboutShortText" value={data.aboutShortText ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
           <RichTextField label="Texto completo (página /sobre)" name="aboutFullText" value={data.aboutFullText ?? ''} onChange={setFieldValue} disabled={!canEdit} />
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Gabinete / Comitê</h2>
           <Field label="Endereço" name="officeAddress" value={data.officeAddress ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="URL de embed do Google Maps" name="officeMapEmbedUrl" value={data.officeMapEmbedUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Redes sociais e contato</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Instagram" name="instagramUrl" value={data.instagramUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
@@ -365,7 +365,7 @@ export function SettingsForm({
           </div>
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Contador de eleição</h2>
           <label className="flex items-center gap-2 text-sm text-slate-700">
             <input
@@ -387,7 +387,7 @@ export function SettingsForm({
           />
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Rodapé legal (TSE / LGPD)</h2>
           <p className="text-xs text-slate-500">
             Os textos exigidos para propaganda eleitoral na internet (Lei 9.504/97) devem ser
@@ -400,7 +400,7 @@ export function SettingsForm({
           <RichTextField label="Termos de uso" name="termsOfServiceText" value={data.termsOfServiceText ?? ''} onChange={setFieldValue} disabled={!canEdit} />
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Curadoria da Home</h2>
           <p className="text-xs text-slate-500">
             Escolha quais seções aparecem na página inicial e em que ordem. O Hero segue sempre no
@@ -409,7 +409,7 @@ export function SettingsForm({
           <HomeSectionsEditor sections={sections} onChange={setSections} disabled={!canEdit} />
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6">
+        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">SEO</h2>
           <Field label="Meta título" name="metaTitle" value={data.metaTitle ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="Meta descrição" name="metaDescription" value={data.metaDescription ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
@@ -432,7 +432,7 @@ export function SettingsForm({
         <button
           type="submit"
           disabled={saving}
-          className="rounded-md bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 disabled:opacity-50"
+          className="rounded-md bg-primary px-6 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50"
         >
           {saving ? 'Salvando…' : 'Salvar configurações'}
         </button>

@@ -67,7 +67,7 @@ export function ResourceTable<T extends { id: string }>({
         <div className="flex justify-end">
           <Link
             href={newHref}
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:opacity-90"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
           >
             {newLabel}
           </Link>
@@ -76,9 +76,9 @@ export function ResourceTable<T extends { id: string }>({
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
-      <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
+      <div className="max-h-[70vh] overflow-auto rounded-lg border border-slate-200 bg-white shadow-sm">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <thead className="sticky top-0 z-10 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500 shadow-sm">
             <tr>
               {columns.map((col) => (
                 <th key={col.key} className="px-4 py-3">

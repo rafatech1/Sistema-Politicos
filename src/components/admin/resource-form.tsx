@@ -102,7 +102,7 @@ export function ResourceForm({
         <div key={field.name} className="space-y-1">
           <label htmlFor={field.name} className="text-sm font-medium text-slate-700">
             {field.label}
-            {field.required && ' *'}
+            {field.required && <span className="ml-0.5 text-red-500">*</span>}
           </label>
 
           {field.type === 'richtext' ? (
@@ -170,7 +170,7 @@ export function ResourceForm({
       <button
         type="submit"
         disabled={saving}
-        className="rounded-md bg-primary px-6 py-2 text-sm font-medium text-white transition-colors hover:opacity-90 disabled:opacity-50"
+        className="rounded-md bg-primary px-6 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50"
       >
         {saving ? 'Salvando…' : 'Salvar'}
       </button>

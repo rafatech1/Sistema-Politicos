@@ -6,25 +6,35 @@ import { hasPermission } from '@/lib/auth/rbac';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { AdminPageHeader } from '@/components/admin/page-header';
 
+const ACCENT_BORDER = {
+  primary: 'border-t-primary',
+  secondary: 'border-t-secondary',
+  accent: 'border-t-accent',
+} as const;
+
 function StatTile({
   icon: Icon,
   label,
   value,
   sublabel,
+  accent = 'primary',
 }: {
   icon: IconType;
   label: string;
   value: number;
   sublabel?: string;
+  accent?: keyof typeof ACCENT_BORDER;
 }) {
   return (
-    <div className="flex items-start gap-4 rounded-lg border border-slate-200 bg-white p-6">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+    <div
+      className={`flex items-start gap-4 rounded-lg border border-t-4 border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md ${ACCENT_BORDER[accent]}`}
+    >
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary text-white">
         <Icon size={18} />
       </span>
       <div>
         <p className="text-sm text-slate-500">{label}</p>
-        <p className="mt-1 text-3xl font-semibold text-slate-900">{value.toLocaleString('pt-BR')}</p>
+        <p className="mt-1 text-3xl font-bold text-slate-900">{value.toLocaleString('pt-BR')}</p>
         {sublabel && <p className="mt-0.5 text-xs text-slate-400">{sublabel}</p>}
       </div>
     </div>
@@ -67,20 +77,33 @@ export default async function AdminDashboardPage() {
       <AdminPageHeader title="Dashboard" description={`${settings.candidateName} · ${settings.mode === 'MANDATE' ? 'Modo Mandato' : 'Modo Campanha'}`} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile icon={FaNewspaper} label="Notícias publicadas" value={publishedPosts} sublabel={`${totalPosts} no total`} />
+        <StatTile
+          icon={FaNewspaper}
+          label="Notícias publicadas"
+          value={publishedPosts}
+          sublabel={`${totalPosts} no total`}
+          accent="primary"
+        />
         <StatTile
           icon={settings.mode === 'MANDATE' ? FaScaleBalanced : FaLightbulb}
           label={settings.mode === 'MANDATE' ? 'Projetos de lei publicados' : 'Propostas publicadas'}
           value={publishedModuleContent}
+          accent="secondary"
         />
         {canManageLeads && (
-          <StatTile icon={FaInbox} label="Leads novos" value={newLeads} sublabel={`${totalLeads} no total`} />
+          <StatTile
+            icon={FaInbox}
+            label="Leads novos"
+            value={newLeads}
+            sublabel={`${totalLeads} no total`}
+            accent="accent"
+          />
         )}
-        <StatTile icon={FaUsers} label="Usuários da equipe" value={userCount} />
+        <StatTile icon={FaUsers} label="Usuários da equipe" value={userCount} accent="primary" />
       </div>
 
       {canReadAudit && (
-        <div className="rounded-lg border border-slate-200 bg-white">
+        <div className="rounded-lg border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-6 py-4">
             <h2 className="font-display text-lg font-semibold text-slate-900">Atividade recente</h2>
           </div>
