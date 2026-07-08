@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { Metadata } from 'next';
-import { Archivo, Inter, JetBrains_Mono, Lora } from 'next/font/google';
+import { Archivo, Inter } from 'next/font/google';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { env } from '@/lib/env';
 import './globals.css';
@@ -16,21 +16,6 @@ const inter = Inter({
 const archivo = Archivo({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-display',
-  display: 'swap',
-});
-
-// Usadas só nas seções "editorial" (Próximos eventos / No que acredito) —
-// serifa pros títulos, mono pros rótulos/meta-dados. Ver tailwind.config.ts
-// (fontFamily.serif / fontFamily.mono) e section-heading.tsx (variant="editorial").
-const lora = Lora({
-  subsets: ['latin', 'latin-ext'],
-  variable: '--font-editorial-serif',
-  display: 'swap',
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin', 'latin-ext'],
-  variable: '--font-editorial-mono',
   display: 'swap',
 });
 
@@ -74,11 +59,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   };
 
   return (
-    <html
-      lang="pt-BR"
-      className={`${inter.variable} ${archivo.variable} ${lora.variable} ${jetbrainsMono.variable}`}
-      style={themeStyle}
-    >
+    <html lang="pt-BR" className={`${inter.variable} ${archivo.variable}`} style={themeStyle}>
       <body>{children}</body>
     </html>
   );
