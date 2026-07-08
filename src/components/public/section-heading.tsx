@@ -21,7 +21,7 @@ export function SectionHeading({
   const Heading = as;
 
   return (
-    <div className="mb-10 flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mb-10 flex items-end justify-between gap-4">
       <div>
         {eyebrow && (
           <p className="mb-3 inline-block -rotate-1 border-2 border-slate-900 bg-accent px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-slate-900">
