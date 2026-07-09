@@ -92,6 +92,15 @@ export async function HeroSection() {
               </p>
             )}
 
+            {settings.mode === 'CAMPAIGN' && (
+              <p className="mt-6 flex items-baseline gap-2">
+                <span className="text-xs font-bold uppercase tracking-[0.25em] text-white/60">Vote</span>
+                <span className="font-display text-4xl font-black leading-none text-accent">
+                  {settings.candidateNumber}
+                </span>
+              </p>
+            )}
+
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <a
                 href="#seguinte"
