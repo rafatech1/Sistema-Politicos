@@ -9,4 +9,5 @@ export const { GET, PATCH, DELETE } = createItemHandlers({
   updateSchema: updateBeliefSchema,
   permission: 'content:read',
   writePermission: 'content:write',
+  revalidateTags: ['home-beliefs'],
 });

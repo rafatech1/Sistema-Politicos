@@ -1,18 +1,22 @@
+import { unstable_cache } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { extractYouTubeId, getYouTubeThumbnailUrl } from '@/lib/utils/youtube';
 import { YouTubeFacade } from '@/components/public/youtube-facade';
 import { SectionHeading } from '@/components/public/section-heading';
 
+const getVideos = unstable_cache(
+  () => prisma.video.findMany({ orderBy: { order: 'asc' }, take: 3 }),
+  ['home-videos'],
+  { tags: ['home-videos'], revalidate: 3600 },
+);
+
 /**
  * O 1º vídeo (order asc) vira o player em destaque; os demais ficam
  * empilhados ao lado, como uma fila de "assista a seguir".
  */
 export async function VideosSection() {
-  const [videos, settings] = await Promise.all([
-    prisma.video.findMany({ orderBy: { order: 'asc' }, take: 3 }),
-    getCachedSiteSettings(),
-  ]);
+  const [videos, settings] = await Promise.all([getVideos(), getCachedSiteSettings()]);
 
   const playable = videos
     .map((video) => ({

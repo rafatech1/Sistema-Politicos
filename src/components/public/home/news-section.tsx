@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { unstable_cache } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { SectionHeading } from '@/components/public/section-heading';
 
@@ -7,18 +8,32 @@ function formatDate(date: Date) {
   return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 
+const getPosts = unstable_cache(
+  () =>
+    prisma.post.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
+      take: 3,
+      include: { category: true },
+    }),
+  ['home-posts'],
+  { tags: ['home-posts'], revalidate: 3600 },
+);
+
 /**
  * Layout editorial: a 1ª notícia (isFeatured desc) é a manchete com
  * imagem grande; as demais viram cards horizontais compactos ao lado.
  */
 export async function NewsSection() {
-  const posts = await prisma.post.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
-    take: 3,
-    include: { category: true },
-  });
-  if (posts.length === 0) return null;
+  const cachedPosts = await getPosts();
+  if (cachedPosts.length === 0) return null;
+
+  // unstable_cache serializa via JSON — datas voltam como string, então
+  // precisam ser reconstruídas antes de chegar em formatDate().
+  const posts = cachedPosts.map((post) => ({
+    ...post,
+    publishedAt: post.publishedAt ? new Date(post.publishedAt) : null,
+  }));
 
   const [featured, ...rest] = posts;
   if (!featured) return null;

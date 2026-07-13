@@ -9,4 +9,5 @@ export const { GET, PATCH, DELETE } = createItemHandlers({
   updateSchema: updateEventoSchema,
   permission: 'content:read',
   writePermission: 'content:write',
+  revalidateTags: ['home-eventos'],
 });

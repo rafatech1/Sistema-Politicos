@@ -1,7 +1,31 @@
 import Link from 'next/link';
+import { unstable_cache } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { SectionHeading } from '@/components/public/section-heading';
+
+const getProjetosDeLei = unstable_cache(
+  () =>
+    prisma.projetoDeLei.findMany({
+      where: { publishStatus: 'PUBLISHED' },
+      orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
+      take: 3,
+    }),
+  ['home-projetos-de-lei'],
+  { tags: ['home-projetos-de-lei'], revalidate: 3600 },
+);
+
+const getPropostas = unstable_cache(
+  () =>
+    prisma.proposta.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
+      take: 3,
+      include: { eixoTematico: true },
+    }),
+  ['home-propostas'],
+  { tags: ['home-propostas'], revalidate: 3600 },
+);
 
 interface HighlightCardData {
   id: string;
@@ -74,11 +98,7 @@ export async function HighlightsSection() {
   const settings = await getCachedSiteSettings();
 
   if (settings.mode === 'MANDATE') {
-    const items = await prisma.projetoDeLei.findMany({
-      where: { publishStatus: 'PUBLISHED' },
-      orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
-      take: 3,
-    });
+    const items = await getProjetosDeLei();
     if (items.length === 0) return null;
 
     return (
@@ -99,12 +119,7 @@ export async function HighlightsSection() {
     );
   }
 
-  const propostas = await prisma.proposta.findMany({
-    where: { status: 'PUBLISHED' },
-    orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
-    take: 3,
-    include: { eixoTematico: true },
-  });
+  const propostas = await getPropostas();
   if (propostas.length === 0) return null;
 
   return (

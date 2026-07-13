@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import type { ZodType } from 'zod';
 import { requireUser, type SessionUser } from '@/lib/auth/session';
 import { requirePermission, hasPermission, type Permission } from '@/lib/auth/rbac';
@@ -38,6 +39,16 @@ export interface CrudFactoryConfig<TCreate, TUpdate> {
   beforeSave?: (data: Record<string, unknown>, user: SessionUser) => void;
   /** Ajuste aplicado só em CREATE (ex: definir authorId como o usuário atual). */
   beforeCreate?: (data: Record<string, unknown>, user: SessionUser) => void;
+  /**
+   * Tags do Next Data Cache a invalidar após CREATE/UPDATE/DELETE (ex: as
+   * seções da home cacheiam suas queries com `unstable_cache` — sem isso,
+   * uma edição no admin só apareceria no site público após o cache expirar).
+   */
+  revalidateTags?: string[];
+}
+
+function revalidate(config: Pick<CrudFactoryConfig<unknown, unknown>, 'revalidateTags'>): void {
+  config.revalidateTags?.forEach((tag) => revalidateTag(tag));
 }
 
 // Inputs de formulário HTML sempre mandam string, mesmo para campos opcionais
@@ -110,6 +121,7 @@ export function createListCreateHandlers<TCreate, TUpdate>(config: CrudFactoryCo
         userAgent: meta.userAgent,
       });
 
+      revalidate(config);
       return NextResponse.json(created, { status: 201 });
     } catch (err) {
       return handleApiError(err);
@@ -162,6 +174,7 @@ export function createItemHandlers<TCreate, TUpdate>(config: CrudFactoryConfig<T
         userAgent: meta.userAgent,
       });
 
+      revalidate(config);
       return NextResponse.json(updated);
     } catch (err) {
       return handleApiError(err);
@@ -190,6 +203,7 @@ export function createItemHandlers<TCreate, TUpdate>(config: CrudFactoryConfig<T
         userAgent: meta.userAgent,
       });
 
+      revalidate(config);
       return NextResponse.json({ success: true });
     } catch (err) {
       return handleApiError(err);

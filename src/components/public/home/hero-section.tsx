@@ -1,7 +1,14 @@
 import Image from 'next/image';
+import { unstable_cache } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { ElectionCountdown } from '@/components/public/election-countdown';
+
+const getBadges = unstable_cache(
+  () => prisma.achievementBadge.findMany({ orderBy: { order: 'asc' } }),
+  ['home-badges'],
+  { tags: ['home-badges'], revalidate: 3600 },
+);
 
 interface Badge {
   id: string;
@@ -40,10 +47,7 @@ function AchievementTicker({ badges }: { badges: Badge[] }) {
 }
 
 export async function HeroSection() {
-  const [settings, badges] = await Promise.all([
-    getCachedSiteSettings(),
-    prisma.achievementBadge.findMany({ orderBy: { order: 'asc' } }),
-  ]);
+  const [settings, badges] = await Promise.all([getCachedSiteSettings(), getBadges()]);
 
   const countdownActive =
     settings.electionCountdownEnabled &&

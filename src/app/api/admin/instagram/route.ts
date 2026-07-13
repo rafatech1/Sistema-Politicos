@@ -13,4 +13,5 @@ export const { GET, POST } = createListCreateHandlers({
   permission: 'content:read',
   writePermission: 'content:write',
   findManyArgs: { orderBy: { order: 'asc' } },
+  revalidateTags: ['home-instagram'],
 });

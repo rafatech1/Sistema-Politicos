@@ -12,4 +12,5 @@ export const { GET, PATCH, DELETE } = createItemHandlers({
   updateSchema: updateInstagramHighlightSchema,
   permission: 'content:read',
   writePermission: 'content:write',
+  revalidateTags: ['home-instagram'],
 });

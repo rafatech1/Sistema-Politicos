@@ -1,5 +1,12 @@
+import { unstable_cache } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { SectionHeading } from '@/components/public/section-heading';
+
+const getBeliefs = unstable_cache(
+  () => prisma.beliefValue.findMany({ where: { isActive: true }, orderBy: { order: 'asc' } }),
+  ['home-beliefs'],
+  { tags: ['home-beliefs'], revalidate: 3600 },
+);
 
 /**
  * "No que acredito" como manifesto numerado, não como grid de cards.
@@ -7,10 +14,7 @@ import { SectionHeading } from '@/components/public/section-heading';
  * ordenação real definida no admin, não é decoração.
  */
 export async function BeliefsSection() {
-  const beliefs = await prisma.beliefValue.findMany({
-    where: { isActive: true },
-    orderBy: { order: 'asc' },
-  });
+  const beliefs = await getBeliefs();
   if (beliefs.length === 0) return null;
 
   return (

@@ -18,4 +18,5 @@ export const { GET, POST } = createListCreateHandlers({
   beforeCreate: (data, user) => {
     data.authorId = user.id;
   },
+  revalidateTags: ['home-propostas'],
 });

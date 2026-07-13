@@ -12,4 +12,5 @@ export const { GET, POST } = createListCreateHandlers({
   findManyArgs: { orderBy: { createdAt: 'desc' } },
   deriveSlug: (data) => data.title,
   publishGate: { field: 'publishStatus', publishedValues: ['PUBLISHED'] },
+  revalidateTags: ['home-projetos-de-lei'],
 });

@@ -1,8 +1,15 @@
 import Image from 'next/image';
+import { unstable_cache } from 'next/cache';
 import { FaInstagram } from 'react-icons/fa6';
 import { prisma } from '@/lib/prisma';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { SectionHeading } from '@/components/public/section-heading';
+
+const getInstagramHighlights = unstable_cache(
+  () => prisma.instagramHighlight.findMany({ orderBy: { order: 'asc' }, take: 3 }),
+  ['home-instagram'],
+  { tags: ['home-instagram'], revalidate: 3600 },
+);
 
 /**
  * Posts com leve rotação alternada, como fotos coladas — a mesma
@@ -10,10 +17,7 @@ import { SectionHeading } from '@/components/public/section-heading';
  * (e em telas pequenas) o card endireita.
  */
 export async function InstagramSection() {
-  const [highlights, settings] = await Promise.all([
-    prisma.instagramHighlight.findMany({ orderBy: { order: 'asc' }, take: 3 }),
-    getCachedSiteSettings(),
-  ]);
+  const [highlights, settings] = await Promise.all([getInstagramHighlights(), getCachedSiteSettings()]);
   if (highlights.length === 0) return null;
 
   return (

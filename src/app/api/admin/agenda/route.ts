@@ -11,4 +11,5 @@ export const { GET, POST } = createListCreateHandlers({
   writePermission: 'content:write',
   findManyArgs: { orderBy: { startAt: 'desc' } },
   deriveSlug: (data) => data.title,
+  revalidateTags: ['home-eventos'],
 });

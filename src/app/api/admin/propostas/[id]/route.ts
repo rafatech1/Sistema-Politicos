@@ -13,4 +13,5 @@ export const { GET, PATCH, DELETE } = createItemHandlers({
   beforeSave: (data) => {
     if (data.status === 'PUBLISHED' && !data.publishedAt) data.publishedAt = new Date();
   },
+  revalidateTags: ['home-propostas'],
 });

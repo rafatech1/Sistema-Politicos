@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { unstable_cache } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { SectionHeading } from '@/components/public/section-heading';
 
@@ -17,17 +18,31 @@ function getDateParts(date: Date) {
   return { day, month, time };
 }
 
+// Revalidate curto (5min, não 1h como as demais seções): a query filtra
+// "eventos a partir de agora" e um cache de longa duração serviria eventos
+// já passados até a próxima invalidação por tag.
+const getUpcomingEventos = unstable_cache(
+  () =>
+    prisma.evento.findMany({
+      where: { isPublic: true, startAt: { gte: new Date() }, status: { not: 'CANCELLED' } },
+      orderBy: { startAt: 'asc' },
+      take: 3,
+    }),
+  ['home-eventos'],
+  { tags: ['home-eventos'], revalidate: 300 },
+);
+
 /**
  * Agenda como lista de compromissos com bloco de data — o dia é o dado
  * mais importante de um evento, então ele vira a âncora visual.
  */
 export async function AgendaSection() {
-  const eventos = await prisma.evento.findMany({
-    where: { isPublic: true, startAt: { gte: new Date() }, status: { not: 'CANCELLED' } },
-    orderBy: { startAt: 'asc' },
-    take: 3,
-  });
-  if (eventos.length === 0) return null;
+  const cachedEventos = await getUpcomingEventos();
+  if (cachedEventos.length === 0) return null;
+
+  // unstable_cache serializa via JSON — startAt volta como string, então
+  // precisa ser reconstruído antes de chegar em getDateParts()/Intl.
+  const eventos = cachedEventos.map((evento) => ({ ...evento, startAt: new Date(evento.startAt) }));
 
   return (
     <section className="bg-white px-6 py-20 sm:py-28">

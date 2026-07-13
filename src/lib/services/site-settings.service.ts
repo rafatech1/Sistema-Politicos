@@ -19,10 +19,14 @@ const DEFAULT_SETTINGS = {
  * banco recém-migrado.
  */
 export async function getSiteSettings() {
-  // upsert (não find + create) porque múltiplas páginas podem ser renderizadas
-  // em paralelo (build estático / requisições concorrentes) e todas caírem no
-  // "não existe ainda" ao mesmo tempo — find+create colidiria com violação de
-  // unique constraint em id=1.
+  // findUnique primeiro: no caso comum (linha já existe) é uma leitura pura,
+  // sem o write de um upsert em toda requisição da home/layout. O upsert só
+  // roda no caminho frio (banco recém-migrado); múltiplas requisições
+  // concorrentes caindo nele ao mesmo tempo colidiriam em unique constraint
+  // com find+create, por isso upsert (não create) aqui.
+  const existing = await prisma.siteSettings.findUnique({ where: { id: SETTINGS_ID } });
+  if (existing) return existing;
+
   return prisma.siteSettings.upsert({
     where: { id: SETTINGS_ID },
     update: {},

@@ -9,4 +9,5 @@ export const { GET, PATCH, DELETE } = createItemHandlers({
   updateSchema: updateBadgeSchema,
   permission: 'content:read',
   writePermission: 'content:write',
+  revalidateTags: ['home-badges'],
 });

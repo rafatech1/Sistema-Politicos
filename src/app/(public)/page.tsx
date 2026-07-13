@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { getCachedSiteSettings } from '@/lib/services/site-settings.cached';
 import { resolveHomeSections, type HomeSectionKey } from '@/lib/home-sections';
 import { HeroSection } from '@/components/public/home/hero-section';
@@ -67,7 +68,12 @@ export default async function HomePage() {
       {heroEnabled && <HeroSection />}
       <div id="seguinte">
         {restSections.map((section) => (
-          <Reveal key={section.key}>{renderSection(section.key, socialData)}</Reveal>
+          // Suspense por seção: cada uma faz sua própria query, sem isso o
+          // React renderiza a árvore de RSCs em cadeia e a 1ª dobra (Hero)
+          // espera a seção mais lenta terminar antes de poder ser enviada.
+          <Suspense key={section.key} fallback={null}>
+            <Reveal>{renderSection(section.key, socialData)}</Reveal>
+          </Suspense>
         ))}
       </div>
     </>

@@ -10,4 +10,5 @@ export const { GET, PATCH, DELETE } = createItemHandlers({
   permission: 'content:read',
   writePermission: 'content:write',
   publishGate: { field: 'publishStatus', publishedValues: ['PUBLISHED'] },
+  revalidateTags: ['home-projetos-de-lei'],
 });
