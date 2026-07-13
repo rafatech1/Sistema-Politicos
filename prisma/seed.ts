@@ -35,7 +35,7 @@ async function main() {
   await upsertSiteSettings(
     {
       mode: 'MANDATE',
-      candidateName: 'Carlos Mendes',
+      candidateName: 'Rafael Araújo',
       candidateNumber: '45123',
       partyAcronym: 'PDC',
       partyName: 'Partido Democrático do Cidadão',
@@ -50,7 +50,7 @@ async function main() {
       aboutShortText:
         'Advogado, ex-vereador e hoje Deputado Estadual, Carlos dedica seu mandato à segurança pública, à saúde e à defesa da família cearense.',
       aboutFullText:
-        '<p>Carlos Mendes nasceu e cresceu em Fortaleza, onde se formou em Direito e iniciou sua trajetória de serviço público como assessor legislativo.</p><p>Eleito vereador em 2016 e reeleito em 2020, chegou à Assembleia Legislativa do Ceará em 2022 com uma das maiores votações do estado, sempre pautado pela defesa da segurança pública, da saúde e da família.</p>',
+        '<p>Rafael Araújo nasceu e cresceu em Fortaleza, onde se formou em Direito e iniciou sua trajetória de serviço público como assessor legislativo.</p><p>Eleito vereador em 2016 e reeleito em 2020, chegou à Assembleia Legislativa do Ceará em 2022 com uma das maiores votações do estado, sempre pautado pela defesa da segurança pública, da saúde e da família.</p>',
       officeAddress: 'Assembleia Legislativa do Ceará — Av. Desembargador Moreira, 2807, Fortaleza - CE',
       officeMapEmbedUrl: 'https://maps.google.com/maps?q=Assembleia+Legislativa+do+Cear%C3%A1&output=embed',
       instagramUrl: 'https://instagram.com/carlosmendes45',
