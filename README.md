@@ -17,7 +17,7 @@ Template reutilizável de site institucional para candidatos políticos brasilei
 
 - Node.js 20+
 - npm
-- PostgreSQL 14+ (local via Docker ou instância gerenciada)
+- Um banco Postgres acessível (recomendado: provisionar já no Railway, mesmo em desenvolvimento — ver [Checklist de Deploy](#checklist-de-deploy--vercel--railway))
 
 ## Setup Local
 
@@ -25,23 +25,19 @@ Template reutilizável de site institucional para candidatos políticos brasilei
    ```bash
    npm install
    ```
-2. Copie o arquivo de ambiente e preencha `DATABASE_URL`:
+2. Copie o arquivo de ambiente e preencha `DATABASE_URL` com a connection string do Postgres (Railway):
    ```bash
    cp .env.example .env
    ```
-3. Suba um Postgres local (opcional, se não tiver um já):
-   ```bash
-   docker compose up -d
-   ```
-4. Rode o setup interativo — aplica as migrations, cria o usuário admin e configura os dados básicos do candidato:
+3. Rode o setup interativo — aplica as migrations, cria o usuário admin e configura os dados básicos do candidato:
    ```bash
    npm run setup
    ```
-5. Inicie o servidor de desenvolvimento:
+4. Inicie o servidor de desenvolvimento:
    ```bash
    npm run dev
    ```
-6. Acesse `http://localhost:3000/admin/login` com o e-mail/senha criados no passo 4.
+5. Acesse `http://localhost:3000/admin/login` com o e-mail/senha criados no passo 3.
 
 ### Comandos úteis
 
