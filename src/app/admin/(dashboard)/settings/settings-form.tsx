@@ -6,6 +6,19 @@ import { ImageUploadField } from '@/components/admin/image-upload-field';
 import { HomeSectionsEditor } from '@/components/admin/home-sections-editor';
 import { resolveHomeSections, type HomeSectionConfig } from '@/lib/home-sections';
 
+const NAV_SECTIONS = [
+  { id: 'modo', label: 'Modo do site' },
+  { id: 'identidade', label: 'Identidade' },
+  { id: 'cores', label: 'Cores e imagens' },
+  { id: 'sobre', label: 'Sobre / Biografia' },
+  { id: 'gabinete', label: 'Gabinete / Comitê' },
+  { id: 'redes', label: 'Redes e contato' },
+  { id: 'contador', label: 'Contador de eleição' },
+  { id: 'rodape', label: 'Rodapé legal' },
+  { id: 'curadoria', label: 'Curadoria da Home' },
+  { id: 'seo', label: 'SEO' },
+] as const;
+
 interface SiteSettingsFormData {
   mode: 'CAMPAIGN' | 'MANDATE';
   candidateName: string;
@@ -204,9 +217,37 @@ export function SettingsForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl space-y-8">
+    <div className="lg:flex lg:items-start lg:gap-8">
+      <nav aria-label="Seções de configurações" className="mb-6 lg:mb-0 lg:w-52 lg:shrink-0">
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2 lg:hidden">
+          {NAV_SECTIONS.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className="shrink-0 whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-primary hover:text-primary"
+            >
+              {s.label}
+            </a>
+          ))}
+        </div>
+
+        <ul className="hidden space-y-0.5 lg:sticky lg:top-6 lg:block">
+          {NAV_SECTIONS.map((s) => (
+            <li key={s.id}>
+              <a
+                href={`#${s.id}`}
+                className="block rounded-md px-3 py-1.5 text-sm text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+              >
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <form onSubmit={handleSubmit} className="max-w-4xl flex-1 space-y-8">
       <fieldset disabled={!canEdit} className="space-y-8">
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <section id="modo" className="scroll-mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Modo do site</h2>
           <p className="text-xs text-slate-500">
             Campanha: propostas, agenda e voluntariado. Mandato: projetos de lei, emendas
@@ -231,7 +272,7 @@ export function SettingsForm({
           </div>
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <section id="identidade" className="scroll-mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Identidade</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Nome do candidato" name="candidateName" value={data.candidateName} onChange={handleChange} disabled={!canEdit} />
@@ -243,7 +284,7 @@ export function SettingsForm({
           </div>
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <section id="cores" className="scroll-mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Cores e imagens</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex items-end gap-3">
@@ -289,20 +330,20 @@ export function SettingsForm({
           </div>
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <section id="sobre" className="scroll-mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Sobre / Biografia resumida</h2>
           <Field label="Tagline (ex: Cristão, conservador e defensor da família)" name="aboutTagline" value={data.aboutTagline ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="Resumo curto (exibido na Home)" name="aboutShortText" value={data.aboutShortText ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
           <RichTextField label="Texto completo (página /sobre)" name="aboutFullText" value={data.aboutFullText ?? ''} onChange={setFieldValue} disabled={!canEdit} />
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <section id="gabinete" className="scroll-mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Gabinete / Comitê</h2>
           <Field label="Endereço" name="officeAddress" value={data.officeAddress ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="URL de embed do Google Maps" name="officeMapEmbedUrl" value={data.officeMapEmbedUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <section id="redes" className="scroll-mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Redes sociais e contato</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Instagram" name="instagramUrl" value={data.instagramUrl ?? ''} onChange={handleChange} disabled={!canEdit} />
@@ -365,7 +406,7 @@ export function SettingsForm({
           </div>
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <section id="contador" className="scroll-mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Contador de eleição</h2>
           <label className="flex items-center gap-2 text-sm text-slate-700">
             <input
@@ -374,6 +415,7 @@ export function SettingsForm({
               checked={data.electionCountdownEnabled}
               onChange={handleChange}
               disabled={!canEdit}
+              className="h-4 w-4 accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
             />
             Exibir contador regressivo no Hero
           </label>
@@ -387,7 +429,7 @@ export function SettingsForm({
           />
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <section id="rodape" className="scroll-mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Rodapé legal (TSE / LGPD)</h2>
           <p className="text-xs text-slate-500">
             Os textos exigidos para propaganda eleitoral na internet (Lei 9.504/97) devem ser
@@ -400,7 +442,7 @@ export function SettingsForm({
           <RichTextField label="Termos de uso" name="termsOfServiceText" value={data.termsOfServiceText ?? ''} onChange={setFieldValue} disabled={!canEdit} />
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <section id="curadoria" className="scroll-mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">Curadoria da Home</h2>
           <p className="text-xs text-slate-500">
             Escolha quais seções aparecem na página inicial e em que ordem. O Hero segue sempre no
@@ -409,7 +451,7 @@ export function SettingsForm({
           <HomeSectionsEditor sections={sections} onChange={setSections} disabled={!canEdit} />
         </section>
 
-        <section className="space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <section id="seo" className="scroll-mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="font-semibold text-slate-900">SEO</h2>
           <Field label="Meta título" name="metaTitle" value={data.metaTitle ?? ''} onChange={handleChange} disabled={!canEdit} />
           <Field label="Meta descrição" name="metaDescription" value={data.metaDescription ?? ''} onChange={handleChange} disabled={!canEdit} textarea />
@@ -437,6 +479,7 @@ export function SettingsForm({
           {saving ? 'Salvando…' : 'Salvar configurações'}
         </button>
       )}
-    </form>
+      </form>
+    </div>
   );
 }

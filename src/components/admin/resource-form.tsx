@@ -122,7 +122,7 @@ export function ResourceForm({
               type="checkbox"
               checked={Boolean(data[field.name])}
               onChange={handleChange}
-              className="ml-2"
+              className="ml-2 h-4 w-4 accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
             />
           ) : field.type === 'textarea' ? (
             <textarea

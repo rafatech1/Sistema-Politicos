@@ -44,6 +44,6 @@ export const COLUMNS: ResourceColumn<PostRow>[] = [
   {
     key: 'isFeatured',
     label: 'Destaque',
-    render: (item) => <Badge tone={item.isFeatured ? 'blue' : 'gray'}>{item.isFeatured ? 'Sim' : 'Não'}</Badge>,
+    render: (item) => <Badge tone={item.isFeatured ? 'accent' : 'gray'}>{item.isFeatured ? 'Sim' : 'Não'}</Badge>,
   },
 ];

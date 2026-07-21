@@ -131,13 +131,13 @@ export function AuditLogManager() {
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                           <p className="mb-1 text-xs font-semibold uppercase text-slate-400">Antes</p>
-                          <pre className="max-h-64 overflow-auto rounded-md bg-white p-3 text-xs text-slate-700">
+                          <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-md bg-white p-3 text-xs text-slate-700">
                             {log.beforeJson != null ? JSON.stringify(log.beforeJson, null, 2) : '—'}
                           </pre>
                         </div>
                         <div>
                           <p className="mb-1 text-xs font-semibold uppercase text-slate-400">Depois</p>
-                          <pre className="max-h-64 overflow-auto rounded-md bg-white p-3 text-xs text-slate-700">
+                          <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-md bg-white p-3 text-xs text-slate-700">
                             {log.afterJson != null ? JSON.stringify(log.afterJson, null, 2) : '—'}
                           </pre>
                         </div>

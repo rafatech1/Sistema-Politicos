@@ -64,6 +64,7 @@ export function HomeSectionsEditor({
               checked={section.enabled}
               disabled={disabled}
               onChange={() => toggle(section.key)}
+              className="h-4 w-4 accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
             />
             Visível
           </label>
